@@ -1,0 +1,29 @@
+﻿@model LoggedOutViewModel
+@{
+    // 设置这使得布局呈现看到匿名用户
+    ViewData["signed-out"] = true;
+}
+<div class="page-header logged-out">
+    <h1>
+        注销
+        <small>您现在登录了</small>
+    </h1>
+    @if (Model.PostLogoutRedirectUri != null)
+    {
+        <div>
+            Click <a class="PostLogoutRedirectUri" href="@Model.PostLogoutRedirectUri">这里</a> 返回到
+            <span>@Model.ClientName</span> 应用.
+        </div>
+    }
+    @if (Model.SignOutIframeUrl != null)
+    {
+        <iframe width="0" height="0" class="signout" src="@Model.SignOutIframeUrl"></iframe>
+    }
+</div>
+@section scripts
+    {
+    @if (Model.AutomaticRedirectAfterSignOut)
+    {
+        <script src="~/js/signout-redirect.js"></script>
+    }
+}

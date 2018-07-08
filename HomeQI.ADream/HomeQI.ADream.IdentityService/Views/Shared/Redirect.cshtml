@@ -1,0 +1,5 @@
+@model RedirectViewModel
+<h1>您现在正在返回应用程序</h1>
+<p>一旦完成，您可以关闭此选项卡。</p>
+<meta http-equiv="refresh" content="0;url=@Model.RedirectUrl" data-url="@Model.RedirectUrl">
+<script src="~/js/signin-redirect.js"></script>

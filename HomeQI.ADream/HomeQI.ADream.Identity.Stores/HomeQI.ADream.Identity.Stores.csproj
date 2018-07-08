@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\HomeQI.ADream.Entites\HomeQI.ADream.Entites.csproj" />
+    <ProjectReference Include="..\HomeQi.Adream.Identity.Core\HomeQi.Adream.Identity.Core.csproj" />
+  </ItemGroup>
+
+</Project>
