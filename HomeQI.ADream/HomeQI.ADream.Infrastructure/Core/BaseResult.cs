@@ -11,9 +11,9 @@ namespace HomeQI.ADream.Infrastructure.Core
         {
 
         }
-        public bool Succeeded { get; protected set; }
-        public IEnumerable<TError> Errors => _errors;
-        public dynamic Result { get; protected set; }
+        public virtual bool Succeeded { get; protected set; }
+        public virtual IEnumerable<TError> Errors { get { return _errors; } protected set { _errors = value.ToList(); } }
+        public virtual dynamic Result { get; set; }
         public override string ToString()
         {
             return Succeeded ?
@@ -30,15 +30,36 @@ namespace HomeQI.ADream.Infrastructure.Core
                 Result = result
             };
         }
+        public static TResult Failed()
+        {
+
+            var res = new TResult
+            {
+                Succeeded = false
+            };
+            return res;
+        }
         public static TResult Failed(params TError[] errors)
         {
 
             var res = new TResult
             {
-                Succeeded = false,
+                Succeeded = false
             };
             res._errors.AddRange(errors);
             return res;
+        }
+        public static TResult Failed(params string[] errors)
+        {
+            List<TError> terrors = new List<TError>();
+            foreach (var item in errors)
+            {
+                terrors.Add(new TError
+                {
+                    Description = item
+                });
+            }
+            return Failed(terrors.ToArray());
         }
         private static TResult RMapper(params TError[] errors)
         {

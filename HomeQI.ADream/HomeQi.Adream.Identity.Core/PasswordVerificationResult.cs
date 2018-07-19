@@ -9,17 +9,17 @@ namespace HomeQI.Adream.Identity
     public enum PasswordVerificationResult
     {
         /// <summary>
-        /// Indicates password verification failed.
+        /// 指示密码验证失败。
         /// </summary>
         Failed = 0,
 
         /// <summary>
-        /// Indicates password verification was successful.
+        /// 指示密码验证成功。
         /// </summary>
         Success = 1,
 
         /// <summary>
-        /// Indicates password verification was successful however the password was encoded using a deprecated algorithm
+        ///指示密码验证是成功的，但是密码是使用不推荐的算法进行编码的。
         /// and should be rehashed and updated.
         /// </summary>
         SuccessRehashNeeded = 2

@@ -12,7 +12,7 @@ namespace HomeQI.Adream.Identity
     /// <summary>
     /// 
     /// </summary>
-    internal static class Rfc6238AuthenticationService
+    public static class Rfc6238AuthenticationService
     {
         private static readonly DateTime _unixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         private static readonly TimeSpan _timestep = TimeSpan.FromMinutes(3);

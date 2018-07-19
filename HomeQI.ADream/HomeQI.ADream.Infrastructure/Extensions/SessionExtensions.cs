@@ -19,6 +19,10 @@ namespace Microsoft.AspNetCore.Http
         {
             session.SetString(key, value.ToJson());
         }
+        public static string GetCheakCode(this ISession session)
+        {
+            return session.GetString("CheakCode");
+        }
         /// <summary>
         /// 
         /// </summary>

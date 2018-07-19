@@ -69,23 +69,23 @@ namespace HomeQI.Adream.Identity
         /// Gets or sets the user name for this user.
         /// </summary>
         [ProtectedPersonalData]
-        public virtual string UserName { get; set; }
+        public virtual string UserName { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the normalized user name for this user.
         /// </summary>
-        public virtual string NormalizedUserName { get; set; }
+        public virtual string NormalizedUserName { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the email address for this user.
         /// </summary>
         [ProtectedPersonalData]
-        public virtual string Email { get; set; }
+        public virtual string Email { get; set; } = "";
 
         /// <summary>
         /// Gets or sets the normalized email address for this user.
         /// </summary>
-        public virtual string NormalizedEmail { get; set; }
+        public virtual string NormalizedEmail { get; set; } = "";
 
         /// <summary>
         /// Gets or sets a flag indicating if a user has confirmed their email address.
@@ -97,12 +97,12 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// Gets or sets a salted and hashed representation of the password for this user.
         /// </summary>
-        public virtual string PasswordHash { get; set; } = "qwe123456";
+        public virtual string PasswordHash { get; set; } = "Qwe@#23";
 
         /// <summary>
         /// A random value that must change whenever a users credentials change (password changed, login removed)
         /// </summary>
-        public virtual string SecurityStamp { get; set; }
+        public virtual string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// A random value that must change whenever a user is persisted to the store
@@ -113,7 +113,7 @@ namespace HomeQI.Adream.Identity
         /// Gets or sets a telephone number for the user.
         /// </summary>
         [ProtectedPersonalData]
-        public virtual string PhoneNumber { get; set; }
+        public virtual string PhoneNumber { get; set; } = "";
 
         /// <summary>
         /// Gets or sets a flag indicating if a user has confirmed their telephone address.

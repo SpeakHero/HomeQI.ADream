@@ -16,8 +16,8 @@ namespace HomeQI.Adream.Identity
     /// <summary>
     /// 为角色创建持久存储的新实例。
     /// </summary>
-    public abstract class RoleStoreBase<TDbcontext> : EntityStore<IdentityRole, IdentityResult, TDbcontext, IdentityError>, IQueryableRoleStore<IdentityRole>,
-        IRoleClaimStore<IdentityRole> where TDbcontext : ADreamDbContext
+    public abstract class RoleStoreBase<TDbcontext, TRole, TRoleClaim> : EntityStore<TRole, IdentityResult, TDbcontext, IdentityError>, IQueryableRoleStore<TRole>,
+        IRoleClaimStore<TRole> where TDbcontext : ADreamDbContext where TRole : IdentityRole<string>, new() where TRoleClaim : IdentityRoleClaim<string>, new()
     {
 
 
@@ -31,7 +31,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="role">The role whose ID should be returned.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the ID of the role.</returns>
-        public virtual Task<string> GeIdentityRoleIdAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        public virtual Task<string> GeIdentityRoleIdAsync(TRole role, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -48,7 +48,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="role">The role whose name should be returned.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the name of the role.</returns>
-        public virtual Task<string> GeIdentityRoleNameAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        public virtual Task<string> GeIdentityRoleNameAsync(TRole role, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -66,7 +66,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="roleName">The name of the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public virtual Task SeIdentityRoleNameAsync(IdentityRole role, string roleName, CancellationToken cancellationToken = default)
+        public virtual Task SeIdentityRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -85,7 +85,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="normalizedName">The normalized role name to look for.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that result of the look up.</returns>
-        public abstract Task<IdentityRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken = default);
+        public abstract Task<TRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Get a role's normalized name as an asynchronous operation.
@@ -93,7 +93,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="role">The role whose normalized name should be retrieved.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the name of the role.</returns>
-        public virtual Task<string> GetNormalizedRoleNameAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        public virtual Task<string> GetNormalizedRoleNameAsync(TRole role, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -111,7 +111,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="normalizedName">The normalized name to set</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public virtual Task SetNormalizedRoleNameAsync(IdentityRole role, string normalizedName, CancellationToken cancellationToken = default)
+        public virtual Task SetNormalizedRoleNameAsync(TRole role, string normalizedName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -129,7 +129,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="role">The role whose claims should be retrieved.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the claims granted to a role.</returns>
-        public abstract Task<IList<Claim>> GetClaimsAsync(IdentityRole role, CancellationToken cancellationToken = default);
+        public abstract Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Adds the <paramref name="claim"/> given to the specified <paramref name="role"/>.
@@ -138,7 +138,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="claim">The claim to add to the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public abstract Task AddClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default);
+        public abstract Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Removes the <paramref name="claim"/> given from the specified <paramref name="role"/>.
@@ -147,12 +147,12 @@ namespace HomeQI.Adream.Identity
         /// <param name="claim">The claim to remove from the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public abstract Task RemoveClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default);
+        public abstract Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// A navigation property for the roles the store contains.
         /// </summary>
-        public abstract IQueryable<IdentityRole> Roles
+        public abstract IQueryable<TRole> Roles
         {
             get;
         }
@@ -163,11 +163,11 @@ namespace HomeQI.Adream.Identity
         /// <param name="role">The associated role.</param>
         /// <param name="claim">The associated claim.</param>
         /// <returns>The role claim entity.</returns>
-        protected virtual IdentityRoleClaim CreateRoleClaim(IdentityRole role, Claim claim)
-            => new IdentityRoleClaim { RoleId = role.Id, ClaimType = claim.Type, ClaimValue = claim.Value };
-        public abstract Task<string> GetRoleIdAsync(IdentityRole role, CancellationToken cancellationToken);
-        public abstract Task<string> GetRoleNameAsync(IdentityRole role, CancellationToken cancellationToken);
-        public virtual Task SetRoleNameAsync(IdentityRole role, string roleName, CancellationToken cancellationToken = default)
+        protected virtual TRoleClaim CreateRoleClaim(TRole role, Claim claim)
+            => new TRoleClaim { RoleId = role.Id, ClaimType = claim.Type, ClaimValue = claim.Value };
+        public abstract Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken);
+        public abstract Task<string> GetRoleNameAsync(TRole role, CancellationToken cancellationToken);
+        public virtual Task SetRoleNameAsync(TRole role, string roleName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -175,5 +175,6 @@ namespace HomeQI.Adream.Identity
             role.Name = roleName;
             return Task.CompletedTask;
         }
+
     }
 }

@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-    <DocumentationFile></DocumentationFile>
+    <DocumentationFile>bin\Debug\netcoreapp2.1\HomeQI.ADream.Identity.Web.xml</DocumentationFile>
     <Optimize>false</Optimize>
     <LangVersion>latest</LangVersion>
   </PropertyGroup>

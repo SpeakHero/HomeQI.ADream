@@ -387,15 +387,14 @@ namespace System.Security
         /// <summary>  
         /// DES decrypt
         /// </summary>  
-        /// <param name="data">Encrypted data</param>  
-        /// <param name="key">Key, requires 24 bits</param>  
-        /// <returns>Decrypted string</returns>  
+        /// <param name="data">数据加密传输</param>  
+        /// <param name="key">密钥，需要24位</param>  
+        /// <returns>解密字符串</returns>  
         public static string DESDecrypt(string data, string key = "TThvj8G5jb6GcTFZmxVwh5Cj")
         {
             Check.Argument.IsNotEmpty(data, nameof(data));
             Check.Argument.IsNotEmpty(key, nameof(key));
             Check.Argument.IsNotOutOfRange(key.Length, 24, 24, nameof(key));
-
             Byte[] encryptedBytes = Convert.FromBase64String(data);
             Byte[] bytes = DESDecrypt(encryptedBytes, key);
 
@@ -439,9 +438,10 @@ namespace System.Security
                             Array.Copy(tmp, 0, ret, 0, len);
                             return ret;
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            return null;
+                            LogerHelp.Error(ex);
+                            return data;
                         }
                     }
                 }

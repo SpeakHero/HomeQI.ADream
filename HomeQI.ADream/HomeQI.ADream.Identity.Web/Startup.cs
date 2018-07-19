@@ -1,6 +1,5 @@
-﻿using HomeQI.Adream.Identity.EntityFrameworkCore;
-using HomeQI.ADream.Identity.Web.Models;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+﻿using HomeQI.Adream.Identity;
+using HomeQI.Adream.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -9,16 +8,11 @@ using Microsoft.Extensions.Caching.Redis;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.PlatformAbstractions;
 using NLog.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using HomeQI.ADream.Identity;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-
 namespace HomeQI.ADream.Identity.Web
 {
     /// <summary>
@@ -45,6 +39,7 @@ namespace HomeQI.ADream.Identity.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            var basePath = PlatformServices.Default.Application.ApplicationBasePath; // 获取到应用程序的根路径
             //注册Swagger生成器，定义一个和多个Swagger 文档
             services.AddSwaggerGen(c =>
             {
@@ -62,6 +57,7 @@ namespace HomeQI.ADream.Identity.Web
                     Type = "apiKey"
                 });
                 c.SwaggerDoc("v1", new Info { Contact = new Contact { Name = "SpeakHero", Email = "491960352@qq.com" }, Description = "身份认证接口", Title = "Identity API", Version = "v1" });
+                c.IncludeXmlComments(basePath + "\\HomeQI.ADream.Identity.Web.xml");
             });
             services.AddMemoryCache(); //MemoryCache缓存注入
             services.AddDistributedMemoryCache();
@@ -74,46 +70,8 @@ namespace HomeQI.ADream.Identity.Web
             loggerFactory2.AddConsole();
             loggerFactory2.AddEventSourceLogger();
             loggerFactory2.AddDebug();
-            ///////////////////jwt//////////////////////
-            services.Configure<Audience>(Configuration.GetSection("Audience"));
-            var audienceConfig = Configuration.GetSection("Audience");
-            var symmetricKeyAsBase64 = audienceConfig["Secret"];
-            var keyByteArray = Encoding.UTF8.GetBytes(symmetricKeyAsBase64);
-            var signingKey = new SymmetricSecurityKey(keyByteArray);
-
-            var tokenValidationParameters = new TokenValidationParameters
-            {
-
-                // The signing key must match!
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = signingKey,
-
-                // Validate the JWT Issuer (iss) claim
-                ValidateIssuer = true,
-                ValidIssuer = audienceConfig["Issuer"],
-
-                // Validate the JWT Audience (aud) claim
-                ValidateAudience = true,
-                ValidAudience = audienceConfig["Audience"],
-
-                // Validate the token expiry
-                ValidateLifetime = true,
-
-                ClockSkew = TimeSpan.FromMinutes(30) //有效期30分钟
-            };
-            services.AddAuthentication(options =>
-            {
-                options.DefaultSignInScheme = CookieAuthenticationDefaults.AuthenticationScheme;
-                options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-                options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            })
-            .AddJwtBearer(o =>
-            {
-                //不使用https
-                //o.RequireHttpsMetadata = false;
-                o.TokenValidationParameters = tokenValidationParameters;
-            })
-            .AddCookie(); ;
+            services.AddIdentityJwtBear();
+            services.AddADeamServices();
             services.AddSingleton<IDistributedCache>(
      serviceProvider =>
          new RedisCache(new RedisCacheOptions
@@ -121,7 +79,10 @@ namespace HomeQI.ADream.Identity.Web
              Configuration = "127.0.0.1:6379",
              InstanceName = "Identity:"
          }));
-            services.AddSession();
+            services.AddSession(o =>
+            {
+                o.IdleTimeout = TimeSpan.FromHours(2);
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

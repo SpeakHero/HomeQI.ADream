@@ -3,11 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Ocelot.DependencyInjection;
-using Ocelot.Middleware;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace HomeQi.ADream.APIGateway
@@ -49,7 +46,7 @@ namespace HomeQi.ADream.APIGateway
                 .AddIdentityServerAuthentication("ClientServiceKey", isaOptClient)
                 .AddIdentityServerAuthentication("ProductServiceKey", isaOptProduct);
             // Ocelot
-            services.AddOcelot(Configuration);
+
             //.AddOpenTracing(option =>
             //{
             //    option.CollectorUrl = Configuration["TracingCenter:Uri"];
@@ -88,7 +85,6 @@ namespace HomeQi.ADream.APIGateway
                 });
 
             // Ocelot
-            app.UseOcelot().Wait();
         }
     }
 }

@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using System;
+using System.Linq;
 using HomeQI.Adream.Identity;
 using HomeQI.ADream.Entities.Framework;
 
@@ -43,7 +44,6 @@ namespace Microsoft.Extensions.DependencyInjection.Extensions
             services.TryAddScoped<IdentityErrorDescriber>();
             services.TryAddScoped<IUserClaimsPrincipalFactory<TUser>, UserClaimsPrincipalFactory<TUser>>();
             services.TryAddScoped<UserManager<TUser>>();
-
             if (setupAction != null)
             {
                 services.Configure(setupAction);

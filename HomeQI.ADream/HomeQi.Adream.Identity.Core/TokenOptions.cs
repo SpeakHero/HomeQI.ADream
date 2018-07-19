@@ -72,7 +72,7 @@ namespace HomeQI.Adream.Identity
         /// Gets or sets the <see cref="AuthenticatorTokenProvider"/> used to validate two factor sign ins with an authenticator.
         /// </summary>
         /// <value>
-        /// The <see cref="AuthenticatorTokenProvider"/> used to validate two factor sign ins with an authenticator.
+        /// The <see cref="AuthenticatorTokenProvider"/> 用于验证带有认证器的双因素登录。
         /// </value>
         public string AuthenticatorTokenProvider { get; set; } = DefaultAuthenticatorProvider;
     }

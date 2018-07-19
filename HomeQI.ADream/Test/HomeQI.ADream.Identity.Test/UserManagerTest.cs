@@ -21,6 +21,14 @@ namespace HomeQI.Adream.Identity.Test
             UserManager = GetRequiredService<UserManager>();
         }
 
+
+        [TestMethod]
+        public void EncryptProviderss()
+        {
+            float a = 32423 / 48;
+            var b = Math.Floor(a);
+        }
+
         [TestMethod]
         public void EncryptProviders()
         {
@@ -129,7 +137,7 @@ namespace HomeQI.Adream.Identity.Test
             for (int i = 0; i < 10; i++)
             {
                 CheakCode cheakCode = new CheakCode();
-                using (var validateImageData = cheakCode.GetImgWithValidateCode())
+                using (var validateImageData = cheakCode.GetImgWithValidateCode(out string code))
                 {
                     using (Image image = Image.FromStream(validateImageData))
                     {

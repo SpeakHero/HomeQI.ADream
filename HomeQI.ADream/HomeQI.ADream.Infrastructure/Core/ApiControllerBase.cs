@@ -3,20 +3,22 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace HomeQI.ADream.Infrastructure.Core
 {
-    [Produces("application/json-patch+json")]
+    [Produces("application/*+json")]
     [Route("api/[controller]/[action]")]
-    [ApiController]
+    //[ApiController]
     [Authorize]
     public abstract class ApiControllerBase : BaseController
     {
@@ -29,6 +31,19 @@ namespace HomeQI.ADream.Infrastructure.Core
 
     public abstract class BaseController : Controller
     {
+        protected ResponseResult VCheakCode(string code)
+        {
+            if (code.IsNullOrEmpty())
+            {
+                return ResponseResult.Failed("图形验证码不能为空 ");
+            }
+            if (!CheakCode.Equals(code))
+            {
+                return ResponseResult.Failed("图形验证码不正确");
+            }
+            Session.SetString(nameof(CheakCode), string.Empty);
+            return ResponseResult.Success();
+        }
         public ISession Session => HttpContext.Session;
 
         protected string CheakCode => Session.GetString(nameof(CheakCode));
@@ -183,5 +198,44 @@ namespace HomeQI.ADream.Infrastructure.Core
         public T GetService<T>() => HttpContext.RequestServices.GetService<T>();
         public T GetRequiredService<T>() => HttpContext.RequestServices.GetRequiredService<T>();
         protected IHostingEnvironment Env => GetRequiredService<IHostingEnvironment>();
+
+        protected string GetModelErrs()
+        {
+            StringBuilder sb = new StringBuilder();
+            var errors = ModelState.Values;
+            foreach (var item in errors)
+            {
+                foreach (var item2 in item.Errors)
+                {
+                    if (!item2.ErrorMessage.IsNotNullOrEmpty())
+                    {
+                        sb.AppendLine(item2.ErrorMessage + "<br />");
+                    }
+                }
+            }
+            return sb.ToString();
+        }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        protected IActionResult Failed()
+        {
+            List<ResponseError> responseErrors = new List<ResponseError>();
+            var keys = ModelState.Keys.ToArray();
+            var vales = ModelState.Values.ToArray();
+            for (int i = 0; i <= ModelState.ErrorCount - 1; i++)
+            {
+                if (vales != null)
+                {
+                    responseErrors.Add(new ResponseError
+                    {
+                        Code = keys[i],
+                        Description = vales[i].ToJson()
+                    });
+                }
+            }
+            return Json(responseErrors);
+        }
     }
 }

@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Http;
 using HomeQI.Adream.Identity;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using HomeQi.Adream.Identity;
-using IdentityServer4.Validation;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -19,7 +18,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IdentityBuilder AddIdentity(
             this IServiceCollection services)
-            => services.AddIdentity(setupAction: null);
+            => services.AddIdentitys<IdentityUser, IdentityRole>(setupAction: null);
 
         /// <summary>
         /// Adds and configures the identity system for the specified User and Role types.
@@ -29,9 +28,10 @@ namespace Microsoft.Extensions.DependencyInjection
         /// <param name="services">The services available in the application.</param>
         /// <param name="setupAction">An action to configure the <see cref="IdentityOptions"/>.</param>
         /// <returns>An <see cref="IdentityBuilder"/> for creating and configuring the identity system.</returns>
-        public static IdentityBuilder AddIdentity(
+        public static IdentityBuilder AddIdentitys<TUser, TRole>(
             this IServiceCollection services,
-            Action<IdentityOptions> setupAction)
+            Action<IdentityOptions> setupAction) where TUser : IdentityUser<string>
+            where TRole : IdentityRole<string>
         {
             // Services used by identity
             services.AddAuthentication(options =>
@@ -67,35 +67,35 @@ namespace Microsoft.Extensions.DependencyInjection
                 o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
             });
 
-            // Hosting doesn't add IHttpContextAccessor by default
+            // 主机不默认添加IHTTCPCONTROXAccess
             services.AddHttpContextAccessor();
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Identity services
-            //services.TryAddScoped<IUserValidator<IdentityUser>, UserValidator<IdentityUser>>();
-            services.TryAddScoped<IPasswordValidator<IdentityUser>, PasswordValidator<IdentityUser>>();
-            services.TryAddScoped<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
+            //services.TryAddScoped<IUserValidator<TUser>, UserValidator<TUser>>();
+            services.TryAddScoped<IPasswordValidator<TUser>, PasswordValidator<TUser>>();
+            services.TryAddScoped<IPasswordHasher<TUser>, PasswordHasher<TUser>>();
             services.TryAddScoped<ILookupNormalizer, UpperInvariantLookupNormalizer>();
-            services.TryAddScoped<IRoleValidator<IdentityRole>, RoleValidator<IdentityRole>>();
+            services.TryAddScoped<IRoleValidator<TRole>, RoleValidator<TRole>>();
             // 没有错误描述器的接口，所以我们可以在不修改接口的情况下添加错误。
             services.TryAddScoped<IdentityErrorDescriber>();
-            services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<IdentityUser>>();
-            services.TryAddScoped<ITwoFactorSecurityStampValidator, TwoFactorSecurityStampValidator<IdentityUser>>();
-            services.TryAddScoped<IUserClaimsPrincipalFactory<IdentityUser>, UserClaimsPrincipalFactory<IdentityUser, IdentityRole>>();
-            services.TryAddScoped<UserManager<IdentityUser>>();
-            services.TryAddScoped<SignInManager<IdentityUser>>();
-            services.TryAddScoped<RoleManager<IdentityRole>>();
-            services.TryAddScoped<AspNetRoleManager<IdentityRole>>();
-            services.TryAddScoped<AspNetUserManager<IdentityUser>>();
-            services.TryAddScoped<UserManager>();
-            services.TryAddScoped<RoleManager>();
+            services.TryAddScoped<ISecurityStampValidator, SecurityStampValidator<TUser>>();
+            services.TryAddScoped<ITwoFactorSecurityStampValidator, TwoFactorSecurityStampValidator<TUser>>();
+            services.TryAddScoped<IUserClaimsPrincipalFactory<TUser>, UserClaimsPrincipalFactory<TUser, TRole>>();
+            services.TryAddScoped<RoleManager<TRole>, AspNetRoleManager<TRole>>();
+            services.TryAddScoped<UserManager<TUser>, AspNetUserManager<TUser>>();
             services.TryAddScoped<SignInManager>();
-            services.TryAddScoped<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
+            services.TryAddScoped<UserManager>();
+            services.TryAddScoped<AspNetUserManager>();
+            services.TryAddScoped<RoleManager>();
+            services.TryAddScoped<TokenManager>();
+            //services.TryAddScoped<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
 
             if (setupAction != null)
             {
                 services.Configure(setupAction);
             }
 
-            return new IdentityBuilder(typeof(IdentityUser), typeof(IdentityRole), services);
+            return new IdentityBuilder(typeof(TUser), typeof(TRole), services);
         }
 
         /// <summary>

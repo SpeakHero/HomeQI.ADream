@@ -7,6 +7,27 @@ namespace Microsoft.AspNetCore.Http
 {
     public static class HttpContextExtensions
     {
+        public static string GetUserIp(this HttpContext context)
+        {
+            var ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = context.Connection.RemoteIpAddress.ToString();
+            }
+            return ip;
+        }
+        //// <summary>
+        /// 判断是否是IP地址格式 0.0.0.0
+        /// </summary>
+        /// <param name="str1">待判断的IP地址</param>
+        /// <returns>true or false</returns>
+        public static bool IsIPAddress(this string str1)
+        {
+            if (str1 == null || str1 == string.Empty || str1.Length < 7 || str1.Length > 15) return false;
+            string regformat = @"^\d{1,3}[\.]\d{1,3}[\.]\d{1,3}[\.]\d{1,3}$";
+            Regex regex = new Regex(regformat, RegexOptions.IgnoreCase);
+            return regex.IsMatch(str1);
+        }
         public static string GetUserId(this HttpRequest request)
         {
             return request.HttpContext.Session.GetString("UserId");

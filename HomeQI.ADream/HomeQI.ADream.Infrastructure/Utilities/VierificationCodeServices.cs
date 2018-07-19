@@ -1,6 +1,6 @@
 ﻿using System;
-using System.DrawingCore;
-using System.DrawingCore.Imaging;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 
 namespace HomeQI.ADream.Infrastructure.Utilities
@@ -66,7 +66,7 @@ namespace HomeQI.ADream.Infrastructure.Utilities
 
 
             //定义图像的大小，生成图像的实例  
-            Img = new Bitmap((int)code.Length * 18, 32);
+            Img = new Bitmap(code.Length * 18, 32);
 
             g = Graphics.FromImage(Img);//从Img对象生成新的Graphics对象    
 

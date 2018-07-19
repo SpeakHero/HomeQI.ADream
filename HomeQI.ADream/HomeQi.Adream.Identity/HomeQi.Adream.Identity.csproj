@@ -10,6 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeQI.ADream.Identity.Stores\HomeQI.ADream.Identity.Stores.csproj" />
+    <ProjectReference Include="..\HomeQI.ADream.Services\HomeQI.ADream.Services.csproj" />
   </ItemGroup>
 
 </Project>

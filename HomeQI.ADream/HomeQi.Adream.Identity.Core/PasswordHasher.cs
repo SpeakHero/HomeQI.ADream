@@ -8,6 +8,8 @@ using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using HomeQI.Adream.Identity.Core;
 using Microsoft.Extensions.Options;
 using System.Security;
+using System.Security.Encrypt;
+using System.Text;
 
 namespace HomeQI.Adream.Identity
 {
@@ -43,26 +45,6 @@ namespace HomeQI.Adream.Identity
         public PasswordHasher(IOptions<PasswordHasherOptions> optionsAccessor = null)
         {
             var options = optionsAccessor?.Value ?? new PasswordHasherOptions();
-
-            _compatibilityMode = options.CompatibilityMode;
-            switch (_compatibilityMode)
-            {
-                case PasswordHasherCompatibilityMode.IdentityV2:
-                    // nothing else to do
-                    break;
-
-                case PasswordHasherCompatibilityMode.IdentityV3:
-                    _iterCount = options.IterationCount;
-                    if (_iterCount < 1)
-                    {
-                        throw new InvalidOperationEx(Resources.InvalidPasswordHasherIterationCount);
-                    }
-                    break;
-
-                default:
-                    throw new InvalidOperationEx(Resources.InvalidPasswordHasherCompatibilityMode);
-            }
-
             _rng = options.Rng;
         }
 
@@ -98,7 +80,9 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(password));
             }
-            return EncryptProvider.DESEncrypt(password);
+            return Convert.ToBase64String(Encoding.UTF8.GetBytes(password));
+
+            // return SecurityHelper.EncryptDES(password);
             //if (_compatibilityMode == PasswordHasherCompatibilityMode.IdentityV2)
             //{
             //    return Convert.ToBase64String(HashPasswordV2(password, _rng));
@@ -180,7 +164,7 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(providedPassword));
             }
-            return EncryptProvider.DESDecrypt(hashedPassword).Equals(providedPassword) ? PasswordVerificationResult.Success : PasswordVerificationResult.Failed;
+            return hashedPassword.Equals(Convert.ToBase64String(Encoding.UTF8.GetBytes(providedPassword))) ? PasswordVerificationResult.Success : PasswordVerificationResult.Failed;
             //byte[] decodedHashedPassword = Convert.FromBase64String(hashedPassword);
 
             //// read the format marker from the hashed password

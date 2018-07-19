@@ -94,7 +94,7 @@ namespace HomeQI.ADream.Infrastructure.Utilities
         /// <summary>
         /// 产生验证码字符串
         /// </summary>                                                                                                              
-        public string GetValidateCode
+        protected string GetValidateCode
         {
             get
             {
@@ -117,13 +117,14 @@ namespace HomeQI.ADream.Infrastructure.Utilities
         /// 返回 MemoryStream
         /// </summary>
         /// <returns>MemoryStream</returns>
-        public MemoryStream GetImgWithValidateCode()
+        public MemoryStream GetImgWithValidateCode(out string code)
         {
             //声明位图
             Bitmap bitMap = null;
             ///画笔
             var pen = new Pen(Color.Black, 2);
             Graphics gph = null;
+            var vcode = GetValidateCode;
             MemoryStream memStream = new MemoryStream();
             Random random = new Random();
             int fontWidth = (int)Math.Round(Width / (CodeNum + 2) / 1.0);  //这里主要是适应字符的字符,让其能全部显示出来
@@ -137,7 +138,7 @@ namespace HomeQI.ADream.Infrastructure.Utilities
                 GraphicsPath graphPath = new GraphicsPath();
                 int x1 = 0, y1 = 0;
                 ///通过循环控制每一个字符
-                for (int i = 0; i < GetValidateCode.Length; i++)
+                for (int i = 0; i < vcode.Length; i++)
                 {
                     //随机字符位置
                     x1 = random.Next(10) + 15 * i;
@@ -147,12 +148,12 @@ namespace HomeQI.ADream.Infrastructure.Utilities
                     Font textFont = new Font(fontFamily[random.Next(fontFamily.Length - 1)], FontSize, FontStyle.Bold);
                     gph.TranslateTransform(10, 0);
                     Matrix transform = gph.Transform;
-                    var chars = GetValidateCode.Substring(i, 1);
+                    var chars = vcode.Substring(i, 1);
                     if (i % 2 == 0)  //这里我做了大小写处理 true 大写了
                     {
                         chars = chars.ToUpper();
                     }
-                    gph.DrawString(GetValidateCode.Substring(i, 1), textFont, solidBrush, Cpoint1);  //写字符
+                    gph.DrawString(vcode.Substring(i, 1), textFont, solidBrush, Cpoint1);  //写字符
                     gph.ResetTransform(); //重置矩阵
                 }
                 RectangleF rect = new RectangleF(random.Next(0, 1), random.Next(0, 1), Width, Height);
@@ -176,6 +177,7 @@ namespace HomeQI.ADream.Infrastructure.Utilities
                     pen.Dispose();
                     graphPath.Dispose();
                 }
+                code = vcode;
                 return memStream;
             }
         }

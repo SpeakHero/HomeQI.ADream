@@ -9,7 +9,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
     /// <summary>
     ///用于身份的实体框架数据库上下文的基类。
     /// </summary>
-    public class IdentityDbContext : IdentityDbContext<IdentityUser, IdentityRole, string>
+    public class IdentityDbContext : IdentityDbContext<IdentityUser, IdentityRole, string, IdentityUserClaim, IdentityUserRole, IdentityUserLogin, IdentityRoleClaim, IdentityUserToken>
     {
         /// <summary>
         /// Initializes a new instance of <see cref="IdentityDbContext"/>.
@@ -19,7 +19,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
 
     }
     /// <summary>
-    /// Base class for the Entity Framework database context used for identity.
+    /// 用于身份的实体框架数据库上下文的基类
     /// </summary>
     /// <typeparam name="TUser">The type of the user objects.</typeparam>
     public class IdentityDbContext<TUser> : IdentityDbContext<TUser, IdentityRole, string> where TUser : IdentityUser
@@ -92,7 +92,6 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// Gets or sets the <see cref="DbSet{TEntity}"/> of role claims.
         /// </summary>
         public DbSet<TRoleClaim> RoleClaims { get; set; }
-
         /// <summary>
         /// Configures the schema needed for the identity framework.
         /// </summary>
@@ -111,7 +110,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             {
                 b.HasKey(r => r.Id);
                 b.HasIndex(r => r.NormalizedName).HasName("RoleNameIndex").IsUnique();
-                b.ToTable("AspNetRoles");
+                b.ToTable("Roles");
                 b.Property(r => r.ConcurrencyStamp).IsConcurrencyToken();
 
                 b.Property(u => u.Name).HasMaxLength(256);

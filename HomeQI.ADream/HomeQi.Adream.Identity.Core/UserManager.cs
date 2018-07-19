@@ -3,7 +3,6 @@
 
 using HomeQI.Adream.Identity.Core;
 using HomeQI.ADream.Entities.Framework;
-using HomeQI.ADream.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,23 +22,23 @@ namespace HomeQI.Adream.Identity
 {
 
     /// <summary>
-    /// Provides the APIs for managing user in a persistence store.
+    /// 提供用于在持久存储中管理用户的API。
     /// </summary>
-    /// <typeparam name="TUser">The type encapsulating a user.</typeparam>
+    /// <typeparam name="TUser">封装用户的类型。</typeparam>
     public class UserManager<TUser> : IDisposable where TUser : EntityBase<string>
     {
         /// <summary>
-        /// The data protection purpose used for the reset password related methods.
+        /// 数据保护的目的是用于重置密码相关的方法。
         /// </summary>
         public const string ResetPasswordTokenPurpose = "ResetPassword";
 
         /// <summary>
-        /// The data protection purpose used for the change phone number methods.
+        /// 数据保护的目的是用于改变电话号码的方法。
         /// </summary>
         public const string ChangePhoneNumberTokenPurpose = "ChangePhoneNumber";
 
         /// <summary>
-        /// The data protection purpose used for the email confirmation related methods.
+        /// 数据保护的目的是用于电子邮件确认的相关方法。
         /// </summary>
         public const string ConfirmEmailTokenPurpose = "EmailConfirmation";
 
@@ -52,27 +51,27 @@ namespace HomeQI.Adream.Identity
         private IServiceProvider _services;
 
         /// <summary>
-        /// The cancellation token used to cancel operations.
+        /// 取消令牌用于取消操作。
         /// </summary>
         protected virtual CancellationToken CancellationToken => CancellationToken.None;
 
         /// <summary>
-        /// Constructs a new instance of <see cref="UserManager{TUser}"/>.
+        ///构造新实例 of <see cref="UserManager{TUser}"/>.
         /// </summary>
-        /// <param name="store">The persistence store the manager will operate over.</param>
+        /// <param name="store">管理器的持久存储将运行。</param>
         /// <param name="optionsAccessor">The accessor used to access the <see cref="IdentityOptions"/>.</param>
-        /// <param name="passwordHasher">The password hashing implementation to use when saving passwords.</param>
+        /// <param name="passwordHasher">保存密码时使用的密码散列实现。</param>
         /// <param name="userValidators">A collection of <see cref="IUserValidator{TUser}"/> to validate users against.</param>
         /// <param name="passwordValidators">A collection of <see cref="IPasswordValidator{TUser}"/> to validate passwords against.</param>
         /// <param name="keyNormalizer">The <see cref="ILookupNormalizer"/> to use when generating index keys for users.</param>
         /// <param name="errors">The <see cref="IdentityErrorDescriber"/> used to provider error messages.</param>
         /// <param name="services">The <see cref="IServiceProvider"/> used to resolve services.</param>
-        /// <param name="logger">The logger used to log messages, warnings and errors.</param>
+        /// <param name="logger">记录器用于记录消息、警告和错误。</param>
         public UserManager(IUserStore<TUser> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<TUser> passwordHasher,
-            IEnumerable<IUserValidator<TUser>> userValidators,
-            IEnumerable<IPasswordValidator<TUser>> passwordValidators,
+            IUserValidator<TUser> userValidators,
+            IPasswordValidator<TUser> passwordValidators,
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
@@ -87,17 +86,11 @@ namespace HomeQI.Adream.Identity
 
             if (userValidators != null)
             {
-                foreach (var v in userValidators)
-                {
-                    UserValidators.Add(v);
-                }
+                UserValidators = userValidators;
             }
             if (passwordValidators != null)
             {
-                foreach (var v in passwordValidators)
-                {
-                    PasswordValidators.Add(v);
-                }
+                PasswordValidators = passwordValidators;
             }
 
             _services = services;
@@ -107,9 +100,7 @@ namespace HomeQI.Adream.Identity
                 {
                     var description = Options.Tokens.ProviderMap[providerName];
 
-                    var provider = (description.ProviderInstance ?? services.GetRequiredService(description.ProviderType))
-                        as IUserTwoFactorTokenProvider<TUser>;
-                    if (provider != null)
+                    if ((description.ProviderInstance ?? services.GetRequiredService(description.ProviderType)) is IUserTwoFactorTokenProvider<TUser> provider)
                     {
                         RegisterTokenProvider(providerName, provider);
                     }
@@ -130,9 +121,9 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Gets or sets the persistence store the manager operates over.
+        /// 获取或设置管理器运行的持久性存储区。
         /// </summary>
-        /// <value>The persistence store the manager operates over.</value>
+        /// <value>管理器的持久存储操作结束。</value>
         protected internal IUserStore<TUser> Store { get; set; }
 
         /// <summary>
@@ -151,12 +142,12 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// The <see cref="IUserValidator{TUser}"/> used to validate users.
         /// </summary>
-        public IList<IUserValidator<TUser>> UserValidators { get; } = new List<IUserValidator<TUser>>();
+        public IUserValidator<TUser> UserValidators { get; }
 
         /// <summary>
         /// The <see cref="IPasswordValidator{TUser}"/> used to validate passwords.
         /// </summary>
-        public IList<IPasswordValidator<TUser>> PasswordValidators { get; } = new List<IPasswordValidator<TUser>>();
+        public IPasswordValidator<TUser> PasswordValidators { get; }
 
         /// <summary>
         /// The <see cref="ILookupNormalizer"/> used to normalize things like user and role names.
@@ -504,7 +495,7 @@ namespace HomeQI.Adream.Identity
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
-        public virtual Task<IdentityResult> UpdateAsync(TUser user)
+        public virtual Task<IdentityResult> UpdateAsync(TUser user, params string[] pasrams)
         {
             ThrowIfDisposed();
             if (user == null)
@@ -512,7 +503,7 @@ namespace HomeQI.Adream.Identity
                 throw new ArgumentNullEx(nameof(user));
             }
 
-            return UpdateUserAsync(user);
+            return UpdateUserAsync(user, pasrams);
         }
 
         /// <summary>
@@ -781,14 +772,14 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Changes a user's password after confirming the specified <paramref name="currentPassword"/> is correct,
+        ///确认指定后更改用户密码 <paramref name="currentPassword"/> is correct,
         /// as an asynchronous operation.
         /// </summary>
-        /// <param name="user">The user whose password should be set.</param>
-        /// <param name="currentPassword">The current password to validate before changing.</param>
-        /// <param name="newPassword">The new password to set for the specified <paramref name="user"/>.</param>
+        /// <param name="user">应该设置密码的用户.</param>
+        /// <param name="currentPassword">更改之前要验证的当前密码。</param>
+        /// <param name="newPassword">要为指定设置的新密码 <paramref name="user"/>.</param>
         /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
+        /// The <see cref="Task"/> 表示异步操作的，包含 <see cref="IdentityResult"/>
         /// of the operation.
         /// </returns>
         public virtual async Task<IdentityResult> ChangePasswordAsync(TUser user, string currentPassword, string newPassword)
@@ -906,6 +897,20 @@ namespace HomeQI.Adream.Identity
         {
             ThrowIfDisposed();
             return GenerateUserTokenAsync(user, Options.Tokens.PasswordResetTokenProvider, ResetPasswordTokenPurpose);
+        }
+        public virtual async Task<IdentityResult> ResetPasswordAsync(TUser user, string newPassword)
+        {
+            ThrowIfDisposed();
+            if (user == null)
+            {
+                throw new ArgumentNullEx(nameof(user));
+            }
+            var result = await UpdatePasswordHash(user, newPassword, validatePassword: true);
+            if (!result.Succeeded)
+            {
+                return result;
+            }
+            return await UpdateUserAsync(user, "PasswordHash");
         }
 
         /// <summary>
@@ -1759,14 +1764,14 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Generates a token for the given <paramref name="user"/> and <paramref name="purpose"/>.
+        /// 生成给定的令牌 <paramref name="user"/> and <paramref name="purpose"/>.
         /// </summary>
-        /// <param name="purpose">The purpose the token will be for.</param>
-        /// <param name="user">The user the token will be for.</param>
-        /// <param name="tokenProvider">The provider which will generate the token.</param>
+        /// <param name="purpose">“专用”的令牌将为.</param>
+        /// <param name="user">在将用户的令牌。</param>
+        /// <param name="tokenProvider">将生成令牌的提供者。</param>
         /// <returns>
-        /// The <see cref="Task"/> that represents result of the asynchronous operation, a token for
-        /// the given user and purpose.
+        /// The <see cref="Task"/>表示异步操作的结果的令牌。
+        /// 给定的用户和目的。
         /// </returns>
         public virtual Task<string> GenerateUserTokenAsync(TUser user, string tokenProvider, string purpose)
         {
@@ -2261,6 +2266,18 @@ namespace HomeQI.Adream.Identity
             return await UpdateAsync(user);
         }
 
+        public Task<IdentityResult> UpdateConfirmPhone(TUser user, bool confirmed = true)
+        {
+            var store = GetPhoneNumberStore();
+            store.SetPhoneNumberConfirmedAsync(user, confirmed, CancellationToken);
+            return store.UpdateAsync(user, CancellationToken, "PhoneNumberConfirmed");
+        }
+        public Task<IdentityResult> UpdateConfirmEmail(TUser user, bool confirmed = true)
+        {
+            var store = GetEmailStore();
+            store.SetEmailConfirmedAsync(user, confirmed, CancellationToken);
+            return store.UpdateAsync(user, CancellationToken, "EmailConfirmed");
+        }
         /// <summary>
         /// Generates a new base32 encoded 160-bit security secret (size of SHA1 hash).
         /// </summary>
@@ -2361,8 +2378,7 @@ namespace HomeQI.Adream.Identity
 
         private IUserTwoFactorStore<TUser> GetUserTwoFactorStore()
         {
-            var cast = Store as IUserTwoFactorStore<TUser>;
-            if (cast == null)
+            if (!(Store is IUserTwoFactorStore<TUser> cast))
             {
                 throw new NotSupportedException(Resources.StoreNotIUserTwoFactorStore);
             }
@@ -2391,8 +2407,7 @@ namespace HomeQI.Adream.Identity
 
         private IUserPhoneNumberStore<TUser> GetPhoneNumberStore()
         {
-            var cast = Store as IUserPhoneNumberStore<TUser>;
-            if (cast == null)
+            if (!(Store is IUserPhoneNumberStore<TUser> cast))
             {
                 throw new NotSupportedException(Resources.StoreNotIUserPhoneNumberStore);
             }
@@ -2425,7 +2440,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="newPassword">The new password.</param>
         /// <param name="validatePassword">Whether to validate the password.</param>
         /// <returns>Whether the password has was successfully updated.</returns>
-        protected virtual Task<IdentityResult> UpdatePasswordHash(TUser user, string newPassword, bool validatePassword)
+        public virtual Task<IdentityResult> UpdatePasswordHash(TUser user, string newPassword, bool validatePassword)
             => UpdatePasswordHash(GetPasswordStore(), user, newPassword, validatePassword);
 
         private async Task<IdentityResult> UpdatePasswordHash(IUserPasswordStore<TUser> passwordStore,
@@ -2464,8 +2479,7 @@ namespace HomeQI.Adream.Identity
         // IUserLoginStore methods
         private IUserLoginStore<TUser> GetLoginStore()
         {
-            var cast = Store as IUserLoginStore<TUser>;
-            if (cast == null)
+            if (!(Store is IUserLoginStore<TUser> cast))
             {
                 throw new NotSupportedException(Resources.StoreNotIUserLoginStore);
             }
@@ -2474,8 +2488,7 @@ namespace HomeQI.Adream.Identity
 
         private IUserSecurityStampStore<TUser> GetSecurityStore()
         {
-            var cast = Store as IUserSecurityStampStore<TUser>;
-            if (cast == null)
+            if (!(Store is IUserSecurityStampStore<TUser> cast))
             {
                 throw new NotSupportedException(Resources.StoreNotIUserSecurityStampStore);
             }
@@ -2484,8 +2497,7 @@ namespace HomeQI.Adream.Identity
 
         private IUserClaimStore<TUser> GetClaimStore()
         {
-            var cast = Store as IUserClaimStore<TUser>;
-            if (cast == null)
+            if (!(Store is IUserClaimStore<TUser> cast))
             {
                 throw new NotSupportedException(Resources.StoreNotIUserClaimStore);
             }
@@ -2520,13 +2532,10 @@ namespace HomeQI.Adream.Identity
                 }
             }
             var errors = new List<IdentityError>();
-            foreach (var v in UserValidators)
+            var result = await UserValidators.ValidateAsync(this, user);
+            if (!result.Succeeded)
             {
-                var result = await v.ValidateAsync(this, user);
-                if (!result.Succeeded)
-                {
-                    errors.AddRange(result.Errors);
-                }
+                errors.AddRange(result.Errors);
             }
             if (errors.Count > 0)
             {
@@ -2546,13 +2555,10 @@ namespace HomeQI.Adream.Identity
         protected async Task<IdentityResult> ValidatePasswordAsync(TUser user, string password)
         {
             var errors = new List<IdentityError>();
-            foreach (var v in PasswordValidators)
+            var result = await PasswordValidators.ValidateAsync(this, user, password);
+            if (!result.Succeeded)
             {
-                var result = await v.ValidateAsync(this, user, password);
-                if (!result.Succeeded)
-                {
-                    errors.AddRange(result.Errors);
-                }
+                errors.AddRange(result.Errors);
             }
             if (errors.Count > 0)
             {

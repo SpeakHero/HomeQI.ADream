@@ -23,19 +23,19 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{D2631011-A9FF-43CC-92F3-EE473667A7EC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQi.Adream.Identity", "HomeQi.Adream.Identity\HomeQi.Adream.Identity.csproj", "{026BB12A-7980-41DD-B28A-89ABC0BC7155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQi.Adream.Identity", "HomeQi.Adream.Identity\HomeQi.Adream.Identity.csproj", "{026BB12A-7980-41DD-B28A-89ABC0BC7155}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQi.Adream.Identity.Core", "HomeQi.Adream.Identity.Core\HomeQi.Adream.Identity.Core.csproj", "{F33DB99C-20BD-4B71-92FA-22D94CF03BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQi.Adream.Identity.Core", "HomeQi.Adream.Identity.Core\HomeQi.Adream.Identity.Core.csproj", "{F33DB99C-20BD-4B71-92FA-22D94CF03BB9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.Identity.Stores", "HomeQI.ADream.Identity.Stores\HomeQI.ADream.Identity.Stores.csproj", "{189712A4-25F3-4593-864B-F862439D5B14}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Stores", "HomeQI.ADream.Identity.Stores\HomeQI.ADream.Identity.Stores.csproj", "{189712A4-25F3-4593-864B-F862439D5B14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.Identity.EntityFrameworkCore", "HomeQI.ADream.Identity.EntityFrameworkCore\HomeQI.ADream.Identity.EntityFrameworkCore.csproj", "{AC6BEBEB-FC59-4FAE-BB6D-47425C585452}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.EntityFrameworkCore", "HomeQI.ADream.Identity.EntityFrameworkCore\HomeQI.ADream.Identity.EntityFrameworkCore.csproj", "{AC6BEBEB-FC59-4FAE-BB6D-47425C585452}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Web", "HomeQI.ADream.Identity.Web\HomeQI.ADream.Identity.Web.csproj", "{D364E0F3-768F-4215-BEE0-773841D9D288}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQi.ADream.APIGateway", "HomeQi.ADream.APIGateway\HomeQi.ADream.APIGateway.csproj", "{D5422C45-1A75-4A8D-A025-4A7F8C94850D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQi.ADream.APIGateway", "HomeQi.ADream.APIGateway\HomeQi.ADream.APIGateway.csproj", "{D5422C45-1A75-4A8D-A025-4A7F8C94850D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.IdentityService", "HomeQI.ADream.IdentityService\HomeQI.ADream.IdentityService.csproj", "{EAD8D7C1-1EF7-4B8F-8906-2155E043EDD6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.Services", "HomeQI.ADream.Services\HomeQI.ADream.Services.csproj", "{02560B49-62BE-4A42-8510-6BBCF9997039}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -95,10 +95,10 @@ Global
 		{D5422C45-1A75-4A8D-A025-4A7F8C94850D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D5422C45-1A75-4A8D-A025-4A7F8C94850D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D5422C45-1A75-4A8D-A025-4A7F8C94850D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EAD8D7C1-1EF7-4B8F-8906-2155E043EDD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EAD8D7C1-1EF7-4B8F-8906-2155E043EDD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EAD8D7C1-1EF7-4B8F-8906-2155E043EDD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EAD8D7C1-1EF7-4B8F-8906-2155E043EDD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{02560B49-62BE-4A42-8510-6BBCF9997039}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{02560B49-62BE-4A42-8510-6BBCF9997039}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{02560B49-62BE-4A42-8510-6BBCF9997039}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{02560B49-62BE-4A42-8510-6BBCF9997039}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -117,7 +117,7 @@ Global
 		{AC6BEBEB-FC59-4FAE-BB6D-47425C585452} = {A5CF1EB3-54F4-4CD9-91C7-3B461206A9C9}
 		{D364E0F3-768F-4215-BEE0-773841D9D288} = {A5CF1EB3-54F4-4CD9-91C7-3B461206A9C9}
 		{D5422C45-1A75-4A8D-A025-4A7F8C94850D} = {21A17497-8635-4F19-84FF-741ECFC537E7}
-		{EAD8D7C1-1EF7-4B8F-8906-2155E043EDD6} = {A5CF1EB3-54F4-4CD9-91C7-3B461206A9C9}
+		{02560B49-62BE-4A42-8510-6BBCF9997039} = {21A17497-8635-4F19-84FF-741ECFC537E7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21D598B0-2383-4B22-826D-E7FB4921BD66}

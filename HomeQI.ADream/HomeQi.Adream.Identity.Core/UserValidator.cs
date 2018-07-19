@@ -45,6 +45,7 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(user));
             }
+
             var errors = new List<IdentityError>();
             await ValidateUserNameAsync(manager, user, errors);
             await ValidateEmailAsync(manager, user, errors);

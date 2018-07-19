@@ -93,6 +93,7 @@ namespace HomeQI.ADream.Infrastructure.Utilities
             }
             catch (Exception ex)
             {
+                LogerHelp.Error(ex);
                 Console.WriteLine(ex.Message);
             }
         }

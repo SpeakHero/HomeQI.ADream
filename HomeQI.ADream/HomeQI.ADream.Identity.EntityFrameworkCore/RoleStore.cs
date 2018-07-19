@@ -1,27 +1,30 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
-using HomeQI.ADream.EntityFrameworkCore;
-using HomeQI.ADream.Infrastructure.Core;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace HomeQI.Adream.Identity.EntityFrameworkCore
 {
+    public class RoleStore : RoleStore<IdentityRole, IdentityRoleClaim>
+    {
+        public RoleStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        {
+        }
+    }
 
     /// <summary>
     /// 
     /// </summary>
-    public class RoleStore : RoleStoreBase<IdentityDbContext>,
-        IQueryableRoleStore<IdentityRole>,
-        IRoleClaimStore<IdentityRole>
+    public class RoleStore<TRole, TRoleClaim> : RoleStoreBase<IdentityDbContext, TRole, TRoleClaim>,
+        IQueryableRoleStore<TRole>,
+        IRoleClaimStore<TRole> where TRole : IdentityRole<string>, new() where TRoleClaim : IdentityRoleClaim<string>, new()
     {
 
         public RoleStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
@@ -29,12 +32,12 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         }
 
         /// <summary>
-        /// Gets the ID for a role from the store as an asynchronous operation.
+        /// 从存储中获取角色的ID作为异步操作。
         /// </summary>
         /// <param name="role">The role whose ID should be returned.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the ID of the role.</returns>
-        public override Task<string> GetRoleIdAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        public override Task<string> GetRoleIdAsync(TRole role, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -51,7 +54,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="role">The role whose name should be returned.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the name of the role.</returns>
-        public override Task<string> GetRoleNameAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        public override Task<string> GetRoleNameAsync(TRole role, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -68,7 +71,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="normalizedName">The normalized role name to look for.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that result of the look up.</returns>
-        public override Task<IdentityRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken = default)
+        public override Task<TRole> FindByNameAsync(string normalizedName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -83,7 +86,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="role">The role whose claims should be retrieved.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>A <see cref="Task{TResult}"/> that contains the claims granted to a role.</returns>
-        public async override Task<IList<Claim>> GetClaimsAsync(IdentityRole role, CancellationToken cancellationToken = default)
+        public async override Task<IList<Claim>> GetClaimsAsync(TRole role, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             if (role == null)
@@ -101,7 +104,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="claim">The claim to add to the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public override Task AddClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default)
+        public override Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             if (role == null)
@@ -124,7 +127,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="claim">The claim to remove from the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public async override Task RemoveClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default)
+        public async override Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             if (role == null)
@@ -143,11 +146,20 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         }
 
 
-        private DbSet<IdentityRoleClaim> RoleClaims { get { return Context.Set<IdentityRoleClaim>(); } }
+        private DbSet<TRoleClaim> RoleClaims
+        {
+            get
+            {
+                return Context.Set<TRoleClaim>();
+            }
+        }
 
-        public override IQueryable<IdentityRole> Roles => Context.Set<IdentityRole>();
-
-
-
+        public override IQueryable<TRole> Roles
+        {
+            get
+            {
+                return Context.Set<TRole>();
+            }
+        }
     }
 }

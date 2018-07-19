@@ -3,11 +3,11 @@
 namespace System.Text
 {
     // See http://tools.ietf.org/html/rfc3548#section-5
-    public  static class Base32
+    public static class Base32
     {
         private static readonly string _base32Chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ234567";
 
-        public static string ToBase32(byte[] input)
+        public static string ToBase32(this byte[] input)
         {
             if (input == null)
             {
@@ -33,7 +33,7 @@ namespace System.Text
             return sb.ToString();
         }
 
-        public static byte[] FromBase32(string input)
+        public static byte[] FromBase32(this string input)
         {
             if (input == null)
             {

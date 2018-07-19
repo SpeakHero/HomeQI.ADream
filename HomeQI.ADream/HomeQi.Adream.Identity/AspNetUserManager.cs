@@ -19,7 +19,7 @@ namespace HomeQI.Adream.Identity
 
     public class AspNetUserManager : AspNetUserManager<IdentityUser>
     {
-        public AspNetUserManager(IUserStore<IdentityUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<IdentityUser> passwordHasher, IEnumerable<IUserValidator<IdentityUser>> userValidators, IEnumerable<IPasswordValidator<IdentityUser>> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<IdentityUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
+        public AspNetUserManager(IUserStore<IdentityUser> store, IOptions<IdentityOptions> optionsAccessor, IPasswordHasher<IdentityUser> passwordHasher, IUserValidator<IdentityUser> userValidators, IPasswordValidator<IdentityUser> passwordValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, IServiceProvider services, ILogger<UserManager<IdentityUser>> logger) : base(store, optionsAccessor, passwordHasher, userValidators, passwordValidators, keyNormalizer, errors, services, logger)
         {
         }
     }
@@ -46,8 +46,8 @@ namespace HomeQI.Adream.Identity
         public AspNetUserManager(IUserStore<TUser> store,
             IOptions<IdentityOptions> optionsAccessor,
             IPasswordHasher<TUser> passwordHasher,
-            IEnumerable<IUserValidator<TUser>> userValidators,
-            IEnumerable<IPasswordValidator<TUser>> passwordValidators,
+            IUserValidator<TUser> userValidators,
+           IPasswordValidator<TUser> passwordValidators,
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,

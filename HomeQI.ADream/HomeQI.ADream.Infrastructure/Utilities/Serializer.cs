@@ -15,7 +15,7 @@ namespace System
     public static class Serializer
     {
 
-      
+
         /// <summary>
         /// 对象转换为json字符串
         /// </summary>
@@ -23,8 +23,14 @@ namespace System
         /// <returns></returns>
         public static string ToJson(this object entity)
         {
-            var converter = new IsoDateTimeConverter();
-            converter.DateTimeFormat = "yyyy-MM-dd HH:mm:ss";
+            if (entity.GetType() == (typeof(string)))
+            {
+                return entity as string;
+            }
+            var converter = new IsoDateTimeConverter
+            {
+                DateTimeFormat = "yyyy-MM-dd HH:mm:ss"
+            };
             var serializer = new JsonSerializer();
             serializer.Converters.Add(converter);
 

@@ -180,7 +180,7 @@ namespace HomeQI.Adream.Identity
         public virtual async Task SignInAsync(TUser user, AuthenticationProperties authenticationProperties, string authenticationMethod = null)
         {
             var userPrincipal = await CreateUserPrincipalAsync(user);
-            // Review: should we guard against CreateUserPrincipal returning null?
+            // 评论：我们应该警惕CreateUserPrincipal回归零吗？
             if (authenticationMethod != null)
             {
                 userPrincipal.Identities.First().AddClaim(new Claim(ClaimTypes.AuthenticationMethod, authenticationMethod));
@@ -324,14 +324,14 @@ namespace HomeQI.Adream.Identity
 
             if (await UserManager.CheckPasswordAsync(user, password))
             {
-                await ResetLockout(user);
+                await ResetLockoutAsync(user);
                 return SignInResult.Success();
             }
             Logger.LogWarning(2, "User {userId} failed to provide the correct password.", await UserManager.GetUserIdAsync(user));
 
             if (UserManager.SupportsUserLockout && lockoutOnFailure)
             {
-                // If lockout is requested, increment access failed count which might lock out the user
+                // 如果请求锁定，则增量访问失败计数可能会锁定用户。
                 await UserManager.AccessFailedAsync(user);
                 if (await UserManager.IsLockedOutAsync(user))
                 {
@@ -342,13 +342,13 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Returns a flag indicating if the current client browser has been remembered by two factor authentication
-        /// for the user attempting to login, as an asynchronous operation.
+        /// 返回一个标志，指示当前客户端浏览器是否已被用于试图登录的
+        /// 用户的双因素身份验证记住，作为异步操作。
         /// </summary>
         /// <param name="user">The user attempting to login.</param>
         /// <returns>
-        /// The task object representing the asynchronous operation containing true if the browser has been remembered
-        /// for the current user.
+        /// 表示如果浏览器已被记住的包含异步的异步操作的任务对象
+        //用于当前用户。
         /// </returns>
         public virtual async Task<bool> IsTwoFactorClientRememberedAsync(TUser user)
         {
@@ -358,11 +358,11 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Sets a flag on the browser to indicate the user has selected "Remember this browser" for two factor authentication purposes,
-        /// as an asynchronous operation.
+        ///在浏览器上设置一个标志，指示用户已经选择了“记住这个浏览器”来进行双因素认证，
+        //作为异步操作。
         /// </summary>
-        /// <param name="user">The user who choose "remember this browser".</param>
-        /// <returns>The task object representing the asynchronous operation.</returns>
+        /// <param name="user">选择“记住这个浏览器”的用户。</param>
+        /// <returns>表示异步操作的任务对象。</returns>
         public virtual async Task RememberTwoFactorClientAsync(TUser user)
         {
             var principal = await StoreRememberClient(user);
@@ -412,7 +412,7 @@ namespace HomeQI.Adream.Identity
         private async Task DoTwoFactorSignInAsync(TUser user, TwoFactorAuthenticationInfo twoFactorInfo, bool isPersistent, bool rememberClient)
         {
             // When token is verified correctly, clear the access failed count used for lockout
-            await ResetLockout(user);
+            await ResetLockoutAsync(user);
 
             // Cleanup external cookie
             if (twoFactorInfo.LoginProvider != null)
@@ -467,7 +467,7 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Validates the two factor sign in code and creates and signs in the user, as an asynchronous operation.
+        /// 验证代码中的双因素符号，并作为异步操作在用户中创建和签名。
         /// </summary>
         /// <param name="provider">The two factor authentication provider to validate the code against.</param>
         /// <param name="code">The two factor authentication code to validate.</param>
@@ -794,13 +794,12 @@ namespace HomeQI.Adream.Identity
         /// </summary>
         /// <param name="user">The user</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the operation.</returns>
-        protected virtual Task ResetLockout(TUser user)
+        protected virtual async Task ResetLockoutAsync(TUser user)
         {
             if (UserManager.SupportsUserLockout)
             {
-                return UserManager.ResetAccessFailedCountAsync(user);
+                await UserManager.ResetAccessFailedCountAsync(user);
             }
-            return Task.CompletedTask;
         }
 
         internal class TwoFactorAuthenticationInfo

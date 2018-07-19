@@ -36,7 +36,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         where TKey : IEquatable<TKey>
     {
         /// <summary>
-        /// Initializes a new instance of the db context.
+        /// 初始化DB上下文的新实例。
         /// </summary>
         /// <param name="options">The options to be used by a <see cref="DbContext"/>.</param>
         public IdentityUserContext(DbContextOptions options) : base(options) { }

@@ -20,13 +20,13 @@ namespace HomeQI.ADream.Entities.Framework
         [StringLength(50)]
         [Display(Name = "创建人")]
 
-        public virtual string CretaedUser { get; set; }
+        public virtual string CretaedUser { get; set; } = "";
         [StringLength(50)]
         [Display(Name = "最后编辑人员")]
 
-        public virtual string EditeUser { get; set; }
+        public virtual string EditeUser { get; set; } = "";
         [Display(Name = "备注说明")]
-        public virtual string Description { get; set; }
+        public virtual string Description { get; set; } = "";
         public virtual bool IsDeleted { get; set; } = false;
     }
 }

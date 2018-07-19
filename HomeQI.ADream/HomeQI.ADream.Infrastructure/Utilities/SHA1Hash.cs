@@ -36,7 +36,7 @@ namespace HomeQI.ADream.Infrastructure.Utilities
 
         private short messageBlockIndex;
 
-        private byte[] messageBlock;
+        private readonly byte[] messageBlock;
         /// <summary>
         /// 
         /// </summary>

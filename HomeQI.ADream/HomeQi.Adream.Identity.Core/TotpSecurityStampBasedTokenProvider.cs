@@ -61,8 +61,7 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(manager));
             }
-            int code;
-            if (!int.TryParse(token, out code))
+            if (!int.TryParse(token, out int code))
             {
                 return false;
             }

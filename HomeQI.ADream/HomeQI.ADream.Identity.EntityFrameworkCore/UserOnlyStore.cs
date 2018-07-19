@@ -12,20 +12,27 @@ using System.Threading;
 using System.Threading.Tasks;
 namespace HomeQI.Adream.Identity.EntityFrameworkCore
 {
-    public class UserOnlyStore : UserStoreBase<ADreamDbContext>,
-        IUserLoginStore<IdentityUser>,
-        IUserClaimStore<IdentityUser>,
-        IUserPasswordStore<IdentityUser>,
-        IUserSecurityStampStore<IdentityUser>,
-        IUserEmailStore<IdentityUser>,
-        IUserLockoutStore<IdentityUser>,
-        IUserPhoneNumberStore<IdentityUser>,
-        IQueryableUserStore<IdentityUser>,
-        IUserTwoFactorStore<IdentityUser>,
-        IUserAuthenticationTokenStore<IdentityUser>,
-        IUserAuthenticatorKeyStore<IdentityUser>,
-        IUserTwoFactorRecoveryCodeStore<IdentityUser>,
-        IUserRoleStore<IdentityUser>
+    public class UserOnlyStore : UserOnlyStore<IdentityUser, IdentityRole, IdentityUserClaim, IdentityUserLogin, IdentityUserRole, IdentityUserToken>
+    {
+        public UserOnlyStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        {
+        }
+    }
+    public class UserOnlyStore<TUser, TRole, TUserClaim, TUserLogin, TUserRole, TUserToken> : UserStoreBase<IdentityDbContext, TUser, TRole, TUserClaim, TUserLogin, TUserRole, TUserToken>,
+        IUserLoginStore<TUser>,
+        IUserClaimStore<TUser>,
+        IUserPasswordStore<TUser>,
+        IUserSecurityStampStore<TUser>,
+        IUserEmailStore<TUser>,
+        IUserLockoutStore<TUser>,
+        IUserPhoneNumberStore<TUser>,
+        IQueryableUserStore<TUser>,
+        IUserTwoFactorStore<TUser>,
+        IUserAuthenticationTokenStore<TUser>,
+        IUserAuthenticatorKeyStore<TUser>,
+        IUserTwoFactorRecoveryCodeStore<TUser>,
+        IUserRoleStore<TUser>
+        where TUser : IdentityUser<string>, new() where TRole : IdentityRole<string>, new() where TUserClaim : IdentityUserClaim<string>, new() where TUserLogin : IdentityUserLogin<string>, new() where TUserRole : IdentityUserRole<string>, new() where TUserToken : IdentityUserToken<string>, new()
     {
         public UserOnlyStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
         {
@@ -36,27 +43,34 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <summary>
         /// DbSet of users.
         /// </summary>
-        protected virtual DbSet<IdentityUser> UsersSet { get { return Context.Set<IdentityUser>(); } }
+        protected virtual DbSet<TUser> UsersSet { get { return Context.Set<TUser>(); } }
 
         /// <summary>
         /// DbSet of user claims.
         /// </summary>
-        protected DbSet<IdentityUserClaim> UserClaims { get { return Context.Set<IdentityUserClaim>(); } }
+        protected virtual DbSet<TUserClaim> UserClaims
+        {
+            get
+            {
+                return Context.Set<TUserClaim>();
+            }
+            set { }
+        }
 
         /// <summary>
         /// DbSet of user logins.
         /// </summary>
-        protected virtual DbSet<IdentityUserLogin> UserLogins { get { return Context.Set<IdentityUserLogin>(); } }
+        protected virtual DbSet<TUserLogin> UserLogins { get { return Context.Set<TUserLogin>(); } }
 
         /// <summary>
         /// DbSet of user tokens.
         /// </summary>
-        protected virtual DbSet<IdentityUserToken> UserTokens { get { return Context.Set<IdentityUserToken>(); } }
+        protected virtual DbSet<TUserToken> UserTokens { get { return Context.Set<TUserToken>(); } }
 
-        protected virtual DbSet<IdentityRole> Roles { get { return Context.Set<IdentityRole>(); } }
-        protected virtual DbSet<IdentityUserRole> UserRoles { get { return Context.Set<IdentityUserRole>(); } }
+        protected virtual DbSet<TRole> Roles { get { return Context.Set<TRole>(); } }
+        protected virtual DbSet<TUserRole> UserRoles { get { return Context.Set<TUserRole>(); } }
 
-        public override Task<IdentityResult> CreateAsync(IdentityUser user, CancellationToken cancellationToken = default)
+        public override Task<IdentityResult> CreateAsync(TUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -67,7 +81,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         }
 
 
-        public override async Task<IdentityResult> UpdateAsync(IdentityUser user, CancellationToken cancellationToken = default, params string[] propertys)
+        public override async Task<IdentityResult> UpdateAsync(TUser user, CancellationToken cancellationToken = default, params string[] propertys)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -76,54 +90,44 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             return await base.UpdateAsync(user, cancellationToken, propertys);
         }
 
-        public override Task<IdentityResult> DeleteAsync(IdentityUser user, CancellationToken cancellationToken = default)
+        public override Task<IdentityResult> DeleteAsync(TUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             user.CheakArgument();
             return base.DeleteAsync(user, cancellationToken);
         }
-
-
-        public override Task<IdentityUser> FindByIdAsync(string userId, CancellationToken cancellationToken = default)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            ThrowIfDisposed();
-            var id = userId;
-            return UsersSet.FindAsync(new object[] { id }, cancellationToken);
-        }
-
-        public override Task<IdentityUser> FindByNameAsync(string UserName, CancellationToken cancellationToken = default)
+        public override Task<TUser> FindByNameAsync(string UserName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             return Users.FirstOrDefaultAsync(u => u.UserName == UserName, cancellationToken);
         }
-        public override IQueryable<IdentityUser> Users => UsersSet;
+        public override IQueryable<TUser> Users => UsersSet;
 
-        protected override Task<IdentityUser> FindUserAsync(string userId, CancellationToken cancellationToken)
+        protected override Task<TUser> FindUserAsync(string userId, CancellationToken cancellationToken)
         {
             return Users.SingleOrDefaultAsync(u => u.Id.Equals(userId), cancellationToken);
         }
 
 
-        protected override Task<IdentityUserLogin> FindUserLoginAsync(string userId, string loginProvider, string providerKey, CancellationToken cancellationToken)
+        protected override Task<TUserLogin> FindUserLoginAsync(string userId, string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
             return UserLogins.SingleOrDefaultAsync(userLogin => userLogin.UserId.Equals(userId) && userLogin.LoginProvider == loginProvider && userLogin.ProviderKey == providerKey, cancellationToken);
         }
-        protected override Task<IdentityUserLogin> FindUserLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
+        protected override Task<TUserLogin> FindUserLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
             return UserLogins.SingleOrDefaultAsync(userLogin => userLogin.LoginProvider == loginProvider && userLogin.ProviderKey == providerKey, cancellationToken);
         }
 
-        public override async Task<IList<Claim>> GetClaimsAsync(IdentityUser user, CancellationToken cancellationToken = default)
+        public override async Task<IList<Claim>> GetClaimsAsync(TUser user, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             user.CheakArgument();
             return await UserClaims.Where(uc => uc.UserId.Equals(user.Id)).Select(c => c.ToClaim()).ToListAsync();
         }
 
-        public override Task AddClaimsAsync(IdentityUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
+        public override Task AddClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             user.CheakArgument();
@@ -135,7 +139,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             return Task.CompletedTask;
         }
 
-        public override async Task ReplaceClaimAsync(IdentityUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default)
+        public override async Task ReplaceClaimAsync(TUser user, Claim claim, Claim newClaim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             user.CheakArgument();
@@ -148,7 +152,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
                 matchedClaim.ClaimType = newClaim.Type;
             }
         }
-        public override async Task RemoveClaimsAsync(IdentityUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
+        public override async Task RemoveClaimsAsync(TUser user, IEnumerable<Claim> claims, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             user.CheakArgument();
@@ -163,7 +167,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             }
         }
 
-        public override Task AddLoginAsync(IdentityUser user, UserLoginInfo login,
+        public override Task AddLoginAsync(TUser user, UserLoginInfo login,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -174,7 +178,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             return Task.FromResult(false);
         }
 
-        public override async Task RemoveLoginAsync(IdentityUser user, string loginProvider, string providerKey,
+        public override async Task RemoveLoginAsync(TUser user, string loginProvider, string providerKey,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -190,7 +194,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             }
         }
 
-        public async override Task<IList<UserLoginInfo>> GetLoginsAsync(IdentityUser user, CancellationToken cancellationToken = default)
+        public async override Task<IList<UserLoginInfo>> GetLoginsAsync(TUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -200,7 +204,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
                 .Select(l => new UserLoginInfo(l.LoginProvider, l.ProviderKey, l.ProviderDisplayName)).ToListAsync();
         }
 
-        public override async Task<IdentityUser> FindByLoginAsync(string loginProvider, string providerKey,
+        public override async Task<TUser> FindByLoginAsync(string loginProvider, string providerKey,
             CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
@@ -213,14 +217,14 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             return null;
         }
 
-        public override Task<IdentityUser> FindByEmailAsync(string Email, CancellationToken cancellationToken = default)
+        public override Task<TUser> FindByEmailAsync(string Email, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
             return Users.FirstOrDefaultAsync(u => u.Email == Email, cancellationToken);
         }
 
-        public override async Task<IList<IdentityUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default)
+        public override async Task<IList<TUser>> GetUsersForClaimAsync(Claim claim, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -233,21 +237,21 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
 
         }
 
-        protected override Task<IdentityUserToken> FindTokenAsync(IdentityUser user, string loginProvider, string name, CancellationToken cancellationToken)
+        protected override Task<TUserToken> FindTokenAsync(TUser user, string loginProvider, string name, CancellationToken cancellationToken)
             => UserTokens.FindAsync(new object[] { user.Id, loginProvider, name }, cancellationToken);
 
-        protected override Task AddUserTokenAsync(IdentityUserToken token)
+        protected override Task AddUserTokenAsync(TUserToken token)
         {
             UserTokens.Add(token);
             return Task.CompletedTask;
         }
-        protected override Task RemoveUserTokenAsync(IdentityUserToken token)
+        protected override Task RemoveUserTokenAsync(TUserToken token)
         {
             UserTokens.Remove(token);
             return Task.CompletedTask;
         }
 
-        public override async Task<IList<IdentityUser>> GetUsersInRoleAsync(string RoleName, CancellationToken cancellationToken = default)
+        public override async Task<IList<TUser>> GetUsersInRoleAsync(string RoleName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -264,10 +268,10 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
                               where userrole.RoleId.Equals(role.Id)
                               select user).ToListAsync();
             }
-            return new List<IdentityUser>();
+            return new List<TUser>();
         }
 
-        public override async Task AddToRoleAsync(IdentityUser user, string RoleName, CancellationToken cancellationToken = default)
+        public override async Task AddToRoleAsync(TUser user, string RoleName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -284,7 +288,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             UserRoles.Add(CreateUserRole(user, roleEntity));
         }
 
-        public override async Task RemoveFromRoleAsync(IdentityUser user, string RoleName, CancellationToken cancellationToken = default)
+        public override async Task RemoveFromRoleAsync(TUser user, string RoleName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -304,7 +308,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             }
         }
 
-        public override async Task<IList<string>> GetRolesAsync(IdentityUser user, CancellationToken cancellationToken = default)
+        public override async Task<IList<string>> GetRolesAsync(TUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -316,7 +320,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
                           select role.Name).ToListAsync();
         }
 
-        public override async Task<bool> IsInRoleAsync(IdentityUser user, string RoleName, CancellationToken cancellationToken = default)
+        public override async Task<bool> IsInRoleAsync(TUser user, string RoleName, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -334,12 +338,12 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             return false;
         }
 
-        protected override Task<IdentityRole> FindRoleAsync(string RoleName, CancellationToken cancellationToken)
+        protected override Task<TRole> FindRoleAsync(string RoleName, CancellationToken cancellationToken)
         {
             return Roles.SingleOrDefaultAsync(r => r.Name == RoleName, cancellationToken);
         }
 
-        protected override Task<IdentityUserRole> FindUserRoleAsync(string userId, string roleId, CancellationToken cancellationToken)
+        protected override Task<TUserRole> FindUserRoleAsync(string userId, string roleId, CancellationToken cancellationToken)
         {
             return UserRoles.FindAsync(new object[] { userId, roleId }, cancellationToken);
         }
