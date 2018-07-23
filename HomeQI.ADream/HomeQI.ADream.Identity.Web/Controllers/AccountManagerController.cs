@@ -164,9 +164,9 @@ namespace HomeQI.ADream.Identity.Web.Controllers
             {
                 return Failed();
             }
-            await _userManager.Store.EntitySet.Where(d => d.IsDeleted).
-                ForEachAsync(action => { action.EmailConfirmed = true; });
-            return Json(_userManager.Store.SaveChangesAsync());
+            _userManager.Store.EntitySet.Reverse().ToList();
+            //  ForEachAsync(action => { action.EmailConfirmed = true; });
+            return Json(await _userManager.Store.SaveChangesAsync());
         }
     }
 }
