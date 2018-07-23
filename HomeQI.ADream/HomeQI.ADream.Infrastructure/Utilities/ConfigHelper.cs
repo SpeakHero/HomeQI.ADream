@@ -33,7 +33,7 @@ namespace System
              });
             return builder.Build();
         }
-       public static string GetConnectionString(string connection = "")
+        public static string GetConnectionString(string connection = "")
         {
             return GetJsonConfig().GetConnectionString(connection ?? "DefaultConnection");
         }

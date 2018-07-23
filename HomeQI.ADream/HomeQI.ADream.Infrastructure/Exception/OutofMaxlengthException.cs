@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace NETCore.Encrypt
+namespace System
 {
     /// <summary>
     /// The encrypt string out of max length exception
     /// </summary>
-    public class OutofMaxlengthException:Exception
+    public class OutofMaxlengthException : Exception
     {
         /// <summary>
         /// The max length of ecnrypt data

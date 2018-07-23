@@ -14,9 +14,8 @@ namespace Microsoft.Extensions.DependencyInjection
     public static class IdentityEntityFrameworkBuilderExtensions
     {
         /// <summary>
-        /// Adds an Entity Framework implementation of identity information stores.
+        /// 添加身份信息存储的实体框架实现。
         /// </summary>
-        /// <typeparam name="TContext">The Entity Framework database context to use.</typeparam>
         /// <param name="builder">The <see cref="IdentityBuilder"/> instance this method extends.</param>
         /// <returns>The <see cref="IdentityBuilder"/> instance this method extends.</returns>
         public static IdentityBuilder AddEntityFrameworkStores(this IdentityBuilder builder)
@@ -28,6 +27,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         private static void AddStores(IServiceCollection services)
         {
+            services.TryAddScoped<IPermissionStore<IdentityPermission>, PermissionStore>();
             services.TryAddScoped<IUserStore<IdentityUser>, UserStore>();
             services.TryAddScoped<IRoleStore<IdentityRole>, RoleStore>();
             services.TryAddScoped<IUserValidator<IdentityUser>, UserValidator>();

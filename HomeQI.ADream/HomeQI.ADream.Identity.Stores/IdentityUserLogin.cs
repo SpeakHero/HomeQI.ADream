@@ -3,6 +3,7 @@
 
 using HomeQI.ADream.Entities.Framework;
 using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace HomeQI.Adream.Identity
 {
@@ -23,21 +24,25 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// Gets or sets the login provider for the login (e.g. facebook, google)
         /// </summary>
-        public virtual string LoginProvider { get; set; }
+        [Required]
+        public virtual string LoginProvider { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the unique provider identifier for this login.
         /// </summary>
-        public virtual string ProviderKey { get; set; }
+        [Required]
+        public virtual string ProviderKey { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the friendly name used in a UI for this login.
         /// </summary>
-        public virtual string ProviderDisplayName { get; set; }
+        [Required]
+        public virtual string ProviderDisplayName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the of the primary key of the user associated with this login.
         /// </summary>
+        [Required]
         public virtual TKey UserId { get; set; }
     }
 }

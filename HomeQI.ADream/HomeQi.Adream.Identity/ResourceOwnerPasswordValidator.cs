@@ -6,7 +6,7 @@
 //using System.Linq.Expressions;
 //using System;
 
-//namespace HomeQi.Adream.Identity
+//namespace HomeQI.Adream.Identity
 //{
 //    public class ResourceOwnerPasswordValidator : IResourceOwnerPasswordValidator
 //    {

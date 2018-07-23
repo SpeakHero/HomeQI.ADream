@@ -27,7 +27,7 @@ namespace System.Linq
                 throw new ArgumentOutOfRangeException("pageSize: " + pageSize, "PageSize cannot be less than 1.");
             }
 
-            TotalItemCount = (superset == null) ? 0 : superset.Count<T>();
+            TotalItemCount = (superset == null) ? 0 : superset.Count();
             PageSize = pageSize;
             PageNumber = pageNumber;
             PageCount = (TotalItemCount > 0) ? ((int)Math.Ceiling(((double)TotalItemCount) / PageSize)) : 0;
@@ -43,8 +43,8 @@ namespace System.Linq
             {
                 Subset.AddRange(
                     (pageNumber == 1)
-                        ? await superset.Skip<T>(0).Take<T>(pageSize).ToListAsync<T>().ConfigureAwait(false)
-                        : await superset.Skip<T>(((pageNumber - 1) * pageSize)).Take<T>(pageSize).ToListAsync<T>().ConfigureAwait(false)
+                        ? await superset.Skip(0).Take(pageSize).ToListAsync().ConfigureAwait(false)
+                        : await superset.Skip(((pageNumber - 1) * pageSize)).Take(pageSize).ToListAsync<T>().ConfigureAwait(false)
                     );
             }
         }

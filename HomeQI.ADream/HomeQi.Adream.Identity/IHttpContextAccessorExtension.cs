@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.JsonWebTokens;
 
-namespace HomeQi.Adream.Identity
+namespace HomeQI.Adream.Identity
 {
     public static class IHttpContextAccessorExtension
     {

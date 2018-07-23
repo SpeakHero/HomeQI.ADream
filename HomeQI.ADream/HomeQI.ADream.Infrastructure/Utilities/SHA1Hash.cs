@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace HomeQI.ADream.Infrastructure.Utilities
+namespace HomeQI.ADream.Infrastructure.HomeQI.ADreamities
 {
     /// <summary>
     /// mysql加密

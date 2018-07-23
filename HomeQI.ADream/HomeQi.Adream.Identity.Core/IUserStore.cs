@@ -10,13 +10,13 @@ using System.Threading.Tasks;
 namespace HomeQI.Adream.Identity
 {
     /// <summary>
-    /// Provides an abstraction for a store which manages user accounts.
+    /// 为管理用户帐户的商店提供抽象。
     /// </summary>
     /// <typeparam name="TUser">The type encapsulating a user.</typeparam>
     public interface IUserStore<TUser> : IEntityStore<TUser, IdentityResult, IdentityError>, IDisposable where TUser : EntityBase<string>
     {
         /// <summary>
-        /// Gets the user identifier for the specified <paramref name="user"/>.
+        /// 获取指定的用户标识符。 <paramref name="user"/>.
         /// </summary>
         /// <param name="user">The user whose identifier should be retrieved.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
@@ -24,7 +24,7 @@ namespace HomeQI.Adream.Identity
         Task<string> GetUserIdAsync(TUser user, CancellationToken cancellationToken);
 
         /// <summary>
-        /// Gets the user name for the specified <paramref name="user"/>.
+        /// 获取指定的用户名。 <paramref name="user"/>.
         /// </summary>
         /// <param name="user">The user whose name should be retrieved.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>

@@ -3,6 +3,9 @@
 
 using HomeQI.ADream.Entities.Framework;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 namespace HomeQI.Adream.Identity
 {
     /// <summary>
@@ -33,10 +36,6 @@ namespace HomeQI.Adream.Identity
             UserName = userName;
         }
 
-        public static implicit operator IdentityUser(bool v)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     /// <summary>
@@ -62,30 +61,34 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// 获取或设置此用户的主键。
         /// </summary>
-        [PersonalDataAttribute]
+        [PersonalData]
         public override TKey Id { get; set; }
 
         /// <summary>
         /// Gets or sets the user name for this user.
         /// </summary>
         [ProtectedPersonalData]
-        public virtual string UserName { get; set; } = "";
+        [Required]
+        public virtual string UserName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the normalized user name for this user.
         /// </summary>
-        public virtual string NormalizedUserName { get; set; } = "";
+        [Required]
+        public virtual string NormalizedUserName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the email address for this user.
         /// </summary>
         [ProtectedPersonalData]
-        public virtual string Email { get; set; } = "";
+        [Required]
+        public virtual string Email { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the normalized email address for this user.
         /// </summary>
-        public virtual string NormalizedEmail { get; set; } = "";
+        [Required]
+        public virtual string NormalizedEmail { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets a flag indicating if a user has confirmed their email address.
@@ -97,23 +100,27 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// Gets or sets a salted and hashed representation of the password for this user.
         /// </summary>
+        [Required]
         public virtual string PasswordHash { get; set; } = "Qwe@#23";
 
         /// <summary>
         /// A random value that must change whenever a users credentials change (password changed, login removed)
         /// </summary>
+        [Required]
         public virtual string SecurityStamp { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// A random value that must change whenever a user is persisted to the store
         /// </summary>
+        [Required]
         public virtual string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
 
         /// <summary>
         /// Gets or sets a telephone number for the user.
         /// </summary>
         [ProtectedPersonalData]
-        public virtual string PhoneNumber { get; set; } = "";
+        [Required]
+        public virtual string PhoneNumber { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets a flag indicating if a user has confirmed their telephone address.
@@ -135,7 +142,7 @@ namespace HomeQI.Adream.Identity
         /// <remarks>
         /// A value in the past means the user is not locked out.
         /// </remarks>
-        public virtual DateTimeOffset? LockoutEnd { get; set; }
+        public virtual DateTime LockoutEnd { get; set; } = DateTime.Now;
 
         /// <summary>
         /// Gets or sets a flag indicating if the user could be locked out.
@@ -147,6 +154,8 @@ namespace HomeQI.Adream.Identity
         /// Gets or sets the number of failed login attempts for the current user.
         /// </summary>
         public virtual int AccessFailedCount { get; set; }
+
+
 
         /// <summary>
         /// Returns the username for this user.

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using AutoMapper.QueryableExtensions;
+using System.Collections.Generic;
 using System.Linq.Expressions;
 
 namespace System.Linq
@@ -9,7 +10,7 @@ namespace System.Linq
     /// <remarks>
     /// Represents a subset of a collection of objects that can be individually accessed by index and containing metadata about the superset collection of objects this subset was created from.
     /// </remarks>
-    /// <typeparam name="T">The type of object the collection should contain.</typeparam>
+    /// <typeparam name="T">集合应该包含的对象类型。</typeparam>
     /// <seealso cref="IPagedList{T}"/>
     /// <seealso cref="BasePagedList{T}"/>
     /// <seealso cref="StaticPagedList{T}"/>
@@ -31,8 +32,8 @@ namespace System.Linq
         /// Initializes a new instance of the <see cref="PagedList{T}"/> class that divides the supplied superset into subsets the size of the supplied pageSize. The instance then only containes the objects contained in the subset specified by index.
         /// </summary>
         /// <param name="superset">The collection of objects to be divided into subsets. If the collection implements <see cref="IQueryable{T}"/>, it will be treated as such.</param>
-        /// <param name="pageNumber">The one-based index of the subset of objects to be contained by this instance.</param>
-        /// <param name="pageSize">The maximum size of any individual subset.</param>
+        /// <param name="pageNumber">这个实例包含的对象子集的一个索引。</param>
+        /// <param name="pageSize">任何单个子集的最大大小。</param>
         /// <exception cref="ArgumentOutOfRangeException">The specified index cannot be less than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The specified page size cannot be less than one.</exception>
         public PagedList(IQueryable<T> superset, int pageNumber, int pageSize)
@@ -111,8 +112,8 @@ namespace System.Linq
         /// Initializes a new instance of the <see cref="PagedList{T}"/> class that divides the supplied superset into subsets the size of the supplied pageSize. The instance then only containes the objects contained in the subset specified by index.
         /// </summary>
         /// <param name="superset">The collection of objects to be divided into subsets. If the collection implements <see cref="IQueryable{T}"/>, it will be treated as such.</param>
-        /// <param name="pageNumber">The one-based index of the subset of objects to be contained by this instance.</param>
-        /// <param name="pageSize">The maximum size of any individual subset.</param>
+        /// <param name="pageNumber">这个实例包含的对象子集的一个索引。</param>
+        /// <param name="pageSize">任何单个子集的最大大小。</param>
         /// <exception cref="ArgumentOutOfRangeException">The specified index cannot be less than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The specified page size cannot be less than one.</exception>
         public PagedList(IEnumerable<T> superset, int pageNumber, int pageSize)
@@ -127,7 +128,7 @@ namespace System.Linq
         /// <param name="superset">Source collection</param>
         public PagedList(PagedListMetaData pagedListMetaData, IEnumerable<T> superset)
         {
-          
+
             TotalItemCount = pagedListMetaData.TotalItemCount;
             PageSize = pagedListMetaData.PageSize;
             PageNumber = pagedListMetaData.PageNumber;

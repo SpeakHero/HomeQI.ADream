@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeQI.ADream.Entites\HomeQI.ADream.Entites.csproj" />
-    <ProjectReference Include="..\HomeQi.Adream.Identity.Core\HomeQi.Adream.Identity.Core.csproj" />
+    <ProjectReference Include="..\HomeQi.Adream.Identity.Core\HomeQIAdream.Identity.Core.csproj" />
   </ItemGroup>
 
 </Project>

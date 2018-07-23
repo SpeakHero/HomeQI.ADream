@@ -3,6 +3,7 @@
 
 using HomeQI.ADream.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,8 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
 {
     public class UserOnlyStore : UserOnlyStore<IdentityUser, IdentityRole, IdentityUserClaim, IdentityUserLogin, IdentityUserRole, IdentityUserToken>
     {
-        public UserOnlyStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        public UserOnlyStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory, IConfiguration configuration)
+            : base(context, errorDescriber, loggerFactory, configuration)
         {
         }
     }
@@ -34,7 +36,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         IUserRoleStore<TUser>
         where TUser : IdentityUser<string>, new() where TRole : IdentityRole<string>, new() where TUserClaim : IdentityUserClaim<string>, new() where TUserLogin : IdentityUserLogin<string>, new() where TUserRole : IdentityUserRole<string>, new() where TUserToken : IdentityUserToken<string>, new()
     {
-        public UserOnlyStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        public UserOnlyStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory, IConfiguration configuration) : base(context, errorDescriber, loggerFactory, configuration)
         {
         }
 

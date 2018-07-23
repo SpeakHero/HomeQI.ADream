@@ -2,6 +2,7 @@
 using HomeQI.Adream.Identity.EntityFrameworkCore;
 using HomeQI.ADream.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,36 @@ using System.Threading.Tasks;
 
 namespace HomeQI.ADream.Identity.EntityFrameworkCore
 {
-    public class RoleClaimStore : EntityStore<IdentityRole, IdentityResult, IdentityDbContext, IdentityError>, IRoleClaimStore<IdentityRole>
+    public class RoleClaimStore : EntityStore<IdentityRole,
+        IdentityResult, IdentityDbContext, IdentityError>,
+        IRoleClaimStore<IdentityRole>
     {
-        public RoleClaimStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        public RoleClaimStore(IdentityDbContext context,
+            IdentityErrorDescriber errorDescriber,
+            ILoggerFactory loggerFactory, IConfiguration configuration) :
+            base(context, errorDescriber, loggerFactory, configuration)
         {
         }
         protected virtual IdentityRoleClaim CreateRoleClaim(IdentityRole role, Claim claim)
       => new IdentityRoleClaim { RoleId = role.Id, ClaimType = claim.Type, ClaimValue = claim.Value };
-        public virtual Task AddClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default)
+        public virtual async Task<IdentityResult> AddClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             role.CheakArgument();
             claim.CheakArgument();
-            Context.RoleClaims.Add(CreateRoleClaim(role, claim));
-            return Task.CompletedTask;
+            var f2 = await DbEntitySet.AnyAsync(d => d.Id.Equals(role.Id));
+            if (f2)
+            {
+
+                var flag = await RoleClaims.AnyAsync(a => a.ClaimType.Equals(claim.Type)
+                 && a.ClaimValue.Equals(claim.Value) && a.RoleId.Equals(role.Id));
+                if (!flag)
+                {
+                    RoleClaims.Add(CreateRoleClaim(role, claim));
+                    return await SaveChangesAsync(cancellationToken);
+                }
+            }
+            return IdentityResult.Failed("已经存在该权限");
         }
         public virtual Task<string> GetRoleIdAsync(IdentityRole role, CancellationToken cancellationToken = default)
         {
@@ -84,16 +101,23 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore
             return await RoleClaims.Where(rc => rc.RoleId.Equals(role.Id)).Select(c => new Claim(c.ClaimType, c.ClaimValue)).ToListAsync(cancellationToken);
         }
 
-        public async virtual Task RemoveClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default)
+        public async virtual Task<IdentityResult> RemoveClaimAsync(IdentityRole role, Claim claim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             role.CheakArgument();
             claim.CheakArgument();
-            var claims = await RoleClaims.Where(rc => rc.RoleId.Equals(role.Id) && rc.ClaimValue == claim.Value && rc.ClaimType == claim.Type).ToListAsync(cancellationToken);
-            foreach (var c in claims)
+            var rolecasims = RoleClaims.Where(rc =>
+  rc.RoleId.Equals(role.Id) &&
+  rc.ClaimValue == claim.Value &&
+  rc.ClaimType == claim.Type).Select(s => new IdentityRole() { Id = s.Id, EditedTime = s.EditedTime });
+            AutoSaveChanges = false;
+            foreach (var item in rolecasims)
             {
-                RoleClaims.Remove(c);
+                item.IsDeleted = true;
+                var delte = await DeleteAsync(item, default);
             }
+            AutoSaveChanges = true;
+            return await SaveChangesAsync(cancellationToken);
         }
         protected virtual DbSet<IdentityRoleClaim> RoleClaims { get { return Context.Set<IdentityRoleClaim>(); } }
     }

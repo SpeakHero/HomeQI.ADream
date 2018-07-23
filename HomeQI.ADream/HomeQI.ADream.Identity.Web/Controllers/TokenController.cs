@@ -1,4 +1,4 @@
-﻿using HomeQi.Adream.Identity;
+﻿using HomeQI.Adream.Identity;
 using HomeQI.ADream.Identity.AccountViewModels;
 using HomeQI.ADream.Infrastructure.Core;
 using Microsoft.AspNetCore.Authorization;

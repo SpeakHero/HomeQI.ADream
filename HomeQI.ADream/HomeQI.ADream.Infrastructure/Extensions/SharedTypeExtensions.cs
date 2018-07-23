@@ -227,7 +227,7 @@
 //            { typeof(int), default(int) },
 //            { typeof(Guid), default(Guid) },
 //            { typeof(DateTime), default(DateTime) },
-//            { typeof(DateTimeOffset), default(DateTimeOffset) },
+//            { typeof(DateTime), default(DateTime) },
 //            { typeof(long), default(long) },
 //            { typeof(bool), default(bool) },
 //            { typeof(double), default(double) },

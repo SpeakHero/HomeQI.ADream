@@ -73,7 +73,7 @@ namespace HomeQI.Adream.Identity
             var userId = await manager.GetUserIdAsync(user);
             using (var writer = ms.CreateWriter())
             {
-                writer.Write(DateTimeOffset.UtcNow);
+                writer.Write(DateTime.UtcNow);
                 writer.Write(userId);
                 writer.Write(purpose ?? "");
                 string stamp = null;
@@ -106,9 +106,9 @@ namespace HomeQI.Adream.Identity
                 var ms = new MemoryStream(unprotectedData);
                 using (var reader = ms.CreateReader())
                 {
-                    var creationTime = reader.ReadDateTimeOffset();
+                    var creationTime = reader.ReadDateTime();
                     var expirationTime = creationTime + Options.TokenLifespan;
-                    if (expirationTime < DateTimeOffset.UtcNow)
+                    if (expirationTime < DateTime.UtcNow)
                     {
                         return false;
                     }
@@ -179,7 +179,7 @@ namespace HomeQI.Adream.Identity
             return new BinaryWriter(stream, DefaultEncoding, true);
         }
 
-        public static DateTimeOffset ReadDateTimeOffset(this BinaryReader reader)
+        public static DateTimeOffset ReadDateTime(this BinaryReader reader)
         {
             return new DateTimeOffset(reader.ReadInt64(), TimeSpan.Zero);
         }

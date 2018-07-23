@@ -1,14 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
-using System;
 
 namespace HomeQI.ADream.EntityFrameworkCore
 {
     public partial class ADreamDbContext : DbContext
     {
         public string ConnectionString { get; set; }
-        public IConfiguration Configuration => ConfigHelper.GetJsonConfig();
+        public IConfiguration Configuration { get; set; }// => ConfigHelper.GetJsonConfig();
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             base.OnConfiguring(optionsBuilder);
@@ -17,8 +16,11 @@ namespace HomeQI.ADream.EntityFrameworkCore
             ConnectionString = ConnectionString ?? conn;
             if (!string.IsNullOrEmpty(ConnectionString))
             {
-                optionsBuilder = value == "mysql" ? optionsBuilder.UseMySql(ConnectionString) : optionsBuilder.UseSqlServer(ConnectionString);
+                optionsBuilder = value == "mysql" ?
+                    optionsBuilder.UseMySql(ConnectionString) :
+                    optionsBuilder.UseSqlServer(ConnectionString);
             }
+
             optionsBuilder.EnableSensitiveDataLogging();
             MemoryCache cache = new MemoryCache(new MemoryCacheOptions());
             optionsBuilder.UseMemoryCache(cache);

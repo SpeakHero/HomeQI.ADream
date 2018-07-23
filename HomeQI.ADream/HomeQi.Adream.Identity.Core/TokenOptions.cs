@@ -32,7 +32,7 @@ namespace HomeQI.Adream.Identity
         public static readonly string DefaultAuthenticatorProvider = "Authenticator";
 
         /// <summary>
-        /// Will be used to construct UserTokenProviders with the key used as the providerName.
+        /// 将被用来构造用户的提供者，其密钥用作提供者名称。
         /// </summary>
         public Dictionary<string, TokenProviderDescriptor> ProviderMap { get; set; } = new Dictionary<string, TokenProviderDescriptor>();
 

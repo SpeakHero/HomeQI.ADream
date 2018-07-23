@@ -1,15 +1,16 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using HomeQI.ADream.Entities.Framework;
 using System.Threading.Tasks;
 
 namespace HomeQI.Adream.Identity
 {
     /// <summary>
-    /// Provides an abstraction for a validating a role.
+    /// 提供用于验证角色的抽象。
     /// </summary>
-    /// <typeparam name="TRole">The type encapsulating a role.</typeparam>
-    public interface IRoleValidator<TRole> where TRole : class
+    /// <typeparam name="TRole">该类型封装了一个角色。</typeparam>
+    public interface IRoleValidator<TRole> where TRole : EntityBase<string>
     {
         /// <summary>
         /// Validates a role as an asynchronous operation.

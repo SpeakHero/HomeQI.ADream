@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace System
 {
@@ -34,6 +36,29 @@ namespace System
                 if (!comparer.Equals(a1[i], a2[i])) return false;
             }
             return true;
+        }
+
+        /// <summary>
+        /// 利用二进制序列化和反序列实现
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static T DeepCopyWithBinarySerialize<T>(T obj)
+        {
+            object retval;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryFormatter bf = new BinaryFormatter();
+                // 序列化成流
+                bf.Serialize(ms, obj);
+                ms.Seek(0, SeekOrigin.Begin);
+                // 反序列化成对象
+                retval = bf.Deserialize(ms);
+                ms.Close();
+            }
+
+            return (T)retval;
         }
         /// <summary>
         ///给对象的指定属性赋值

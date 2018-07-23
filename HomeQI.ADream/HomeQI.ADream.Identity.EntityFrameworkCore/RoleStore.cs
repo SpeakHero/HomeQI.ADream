@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
 {
     public class RoleStore : RoleStore<IdentityRole, IdentityRoleClaim>
     {
-        public RoleStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        public RoleStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory, IConfiguration configuration) : base(context, errorDescriber, loggerFactory, configuration)
         {
         }
     }
@@ -27,7 +28,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         IRoleClaimStore<TRole> where TRole : IdentityRole<string>, new() where TRoleClaim : IdentityRoleClaim<string>, new()
     {
 
-        public RoleStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        public RoleStore(IdentityDbContext context, IdentityErrorDescriber errorDescriber, ILoggerFactory loggerFactory, IConfiguration configuration) : base(context, errorDescriber, loggerFactory, configuration)
         {
         }
 
@@ -104,7 +105,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="claim">The claim to add to the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public override Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default)
+        public override async Task<IdentityResult> AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             if (role == null)
@@ -115,9 +116,19 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             {
                 throw new InvalidOperationEx(nameof(claim));
             }
+            var f2 = await DbEntitySet.AnyAsync(d => d.Id.Equals(role.Id));
+            if (f2)
+            {
 
-            RoleClaims.Add(CreateRoleClaim(role, claim));
-            return Task.FromResult(false);
+                var flag = await RoleClaims.AnyAsync(a => a.ClaimType.Equals(claim.Type)
+                 && a.ClaimValue.Equals(claim.Value) && a.RoleId.Equals(role.Id));
+                if (!flag)
+                {
+                    RoleClaims.Add(CreateRoleClaim(role, claim));
+                    return await SaveChangesAsync(cancellationToken);
+                }
+            }
+            return IdentityResult.Failed("已经存在该权限");
         }
 
         /// <summary>
@@ -127,7 +138,7 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
         /// <param name="claim">The claim to remove from the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public async override Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default)
+        public async override Task<IdentityResult> RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default)
         {
             ThrowIfDisposed();
             if (role == null)
@@ -138,11 +149,19 @@ namespace HomeQI.Adream.Identity.EntityFrameworkCore
             {
                 throw new InvalidOperationEx(nameof(claim));
             }
-            var claims = await RoleClaims.Where(rc => rc.RoleId.Equals(role.Id) && rc.ClaimValue == claim.Value && rc.ClaimType == claim.Type).ToListAsync(cancellationToken);
-            foreach (var c in claims)
+            var rolecasims = RoleClaims.Where(rc =>
+             rc.RoleId.Equals(role.Id) &&
+             rc.ClaimValue == claim.Value &&
+             rc.ClaimType == claim.Type).Select(s => new TRoleClaim() { Id = s.Id, EditedTime = s.EditedTime });
+            //  await rolecasims.ForEachAsync(f => f.IsDeleted = true);
+            AutoSaveChanges = false;
+            foreach (var item in rolecasims)
             {
-                RoleClaims.Remove(c);
+                item.IsDeleted = true;
+                var delte = await DeleteAsync(item, default);
             }
+            AutoSaveChanges = true;
+            return await SaveChangesAsync(cancellationToken);
         }
 
 

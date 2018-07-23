@@ -9,7 +9,7 @@ namespace System.Linq
     /// <remarks>
     /// Represents a subset of a collection of objects that can be individually accessed by index and containing metadata about the superset collection of objects this subset was created from.
     /// </remarks>
-    /// <typeparam name="T">The type of object the collection should contain.</typeparam>
+    /// <typeparam name="T">集合应该包含的对象类型。</typeparam>
     /// <typeparam name="TKey"></typeparam>
     /// <seealso cref="IPagedList{T}"/>
     /// <seealso cref="BasePagedList{T}"/>
@@ -23,8 +23,8 @@ namespace System.Linq
         /// </summary>
         /// <param name="superset">The collection of objects to be divided into subsets. If the collection implements <see cref="IQueryable{T}"/>, it will be treated as such.</param>
         /// <param name="keySelector">Expression for Order</param>
-        /// <param name="pageNumber">The one-based index of the subset of objects to be contained by this instance.</param>
-        /// <param name="pageSize">The maximum size of any individual subset.</param>
+        /// <param name="pageNumber">这个实例包含的对象子集的一个索引。</param>
+        /// <param name="pageSize">任何单个子集的最大大小。</param>
         /// <exception cref="ArgumentOutOfRangeException">The specified index cannot be less than zero.</exception>
         /// <exception cref="ArgumentOutOfRangeException">The specified page size cannot be less than one.</exception>
         public PagedListForEntityFramework(IQueryable<T> superset, Expression<Func<T, TKey>> keySelector, int pageNumber, int pageSize)
@@ -34,7 +34,7 @@ namespace System.Linq
             if (pageSize < 1)
                 PageSize = 15;
 
-            // set source to blank list if superset is null to prevent exceptions
+            // 如果Suffset为NULL以防止异常，则将源设置为空白列表
             TotalItemCount = superset == null ? 0 : superset.Count();
             PageSize = pageSize;
             PageNumber = pageNumber;

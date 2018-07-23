@@ -1,0 +1,7 @@
+﻿{
+  "SetHome": {
+    "Controller": "Home",
+    "Action": "Index",
+    "Area": ""
+  }
+}

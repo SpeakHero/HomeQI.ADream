@@ -58,7 +58,7 @@ namespace System.Security
             }
         }
         //默认密钥向量
-        private static byte[] Keys = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
+        private static readonly byte[] Keys = { 0x12, 0x34, 0x56, 0x78, 0x90, 0xAB, 0xCD, 0xEF };
         /// <summary>
         /// DES解密字符串
         /// </summary>

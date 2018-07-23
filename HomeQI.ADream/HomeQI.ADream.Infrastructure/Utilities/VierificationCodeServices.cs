@@ -3,7 +3,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 
-namespace HomeQI.ADream.Infrastructure.Utilities
+namespace HomeQI.ADream.Infrastructure.HomeQI.ADreamities
 {
     /// <summary>
     /// 生成简单的验证码

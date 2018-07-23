@@ -8,7 +8,7 @@ namespace System.Linq
     /// <remarks>
     /// Represents a subset of a collection of objects that can be individually accessed by index and containing metadata about the superset collection of objects this subset was created from.
     /// </remarks>
-    /// <typeparam name="T">The type of object the collection should contain.</typeparam>
+    /// <typeparam name="T">集合应该包含的对象类型。</typeparam>
     /// <seealso cref="IEnumerable{T}"/>
     public interface IPagedList<out T> : IPagedList, IEnumerable<T>
     {

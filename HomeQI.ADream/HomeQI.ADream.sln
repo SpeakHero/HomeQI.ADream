@@ -23,9 +23,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Test
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApplication1", "WebApplication1\WebApplication1.csproj", "{D2631011-A9FF-43CC-92F3-EE473667A7EC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQi.Adream.Identity", "HomeQi.Adream.Identity\HomeQi.Adream.Identity.csproj", "{026BB12A-7980-41DD-B28A-89ABC0BC7155}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.Adream.Identity", "HomeQi.Adream.Identity\HomeQI.Adream.Identity.csproj", "{026BB12A-7980-41DD-B28A-89ABC0BC7155}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQi.Adream.Identity.Core", "HomeQi.Adream.Identity.Core\HomeQi.Adream.Identity.Core.csproj", "{F33DB99C-20BD-4B71-92FA-22D94CF03BB9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQIAdream.Identity.Core", "HomeQi.Adream.Identity.Core\HomeQIAdream.Identity.Core.csproj", "{F33DB99C-20BD-4B71-92FA-22D94CF03BB9}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Stores", "HomeQI.ADream.Identity.Stores\HomeQI.ADream.Identity.Stores.csproj", "{189712A4-25F3-4593-864B-F862439D5B14}"
 EndProject
@@ -33,9 +33,21 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Enti
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.Web", "HomeQI.ADream.Identity.Web\HomeQI.ADream.Identity.Web.csproj", "{D364E0F3-768F-4215-BEE0-773841D9D288}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQi.ADream.APIGateway", "HomeQi.ADream.APIGateway\HomeQi.ADream.APIGateway.csproj", "{D5422C45-1A75-4A8D-A025-4A7F8C94850D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.APIGateway", "HomeQi.ADream.APIGateway\HomeQI.ADream.APIGateway.csproj", "{D5422C45-1A75-4A8D-A025-4A7F8C94850D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.Services", "HomeQI.ADream.Services\HomeQI.ADream.Services.csproj", "{02560B49-62BE-4A42-8510-6BBCF9997039}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Services", "HomeQI.ADream.Services\HomeQI.ADream.Services.csproj", "{02560B49-62BE-4A42-8510-6BBCF9997039}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Identity.ViewModels", "Identity\HomeQI.ADream.Identity.ViewModels\HomeQI.ADream.Identity.ViewModels.csproj", "{AC881095-DB25-4984-8614-176B525E20A4}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HomeQI.ADream.Redis", "HomeQI.ADream.Redis\HomeQI.ADream.Redis.csproj", "{09DE3F5F-F850-4B4D-A347-F5FABA2CEBA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.Payments", "src\HomeQI.ADream.Payments\HomeQI.ADream.Payments.csproj", "{9B3B7DE7-E708-4B44-BF85-F1E38D40B98F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HomeQI.ADream.Logs", "HomeQI.ADream.Logs\HomeQI.ADream.Logs.csproj", "{E84C58C5-D8C1-419E-A3FB-991E7B2D0B2D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "zh-cn", "zh-cn", "{229E82AD-AC00-41E1-B566-04B5E69699D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Microsoft.EntityFrameworkCore.zh-cn", "Microsoft.EntityFrameworkCore.zh-cn\Microsoft.EntityFrameworkCore.zh-cn.csproj", "{5F9E59C2-7453-462E-A037-3EDB8D2DBE2F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +111,26 @@ Global
 		{02560B49-62BE-4A42-8510-6BBCF9997039}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{02560B49-62BE-4A42-8510-6BBCF9997039}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{02560B49-62BE-4A42-8510-6BBCF9997039}.Release|Any CPU.Build.0 = Release|Any CPU
+		{AC881095-DB25-4984-8614-176B525E20A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{AC881095-DB25-4984-8614-176B525E20A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC881095-DB25-4984-8614-176B525E20A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{AC881095-DB25-4984-8614-176B525E20A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09DE3F5F-F850-4B4D-A347-F5FABA2CEBA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09DE3F5F-F850-4B4D-A347-F5FABA2CEBA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09DE3F5F-F850-4B4D-A347-F5FABA2CEBA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09DE3F5F-F850-4B4D-A347-F5FABA2CEBA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B3B7DE7-E708-4B44-BF85-F1E38D40B98F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B3B7DE7-E708-4B44-BF85-F1E38D40B98F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B3B7DE7-E708-4B44-BF85-F1E38D40B98F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B3B7DE7-E708-4B44-BF85-F1E38D40B98F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E84C58C5-D8C1-419E-A3FB-991E7B2D0B2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E84C58C5-D8C1-419E-A3FB-991E7B2D0B2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E84C58C5-D8C1-419E-A3FB-991E7B2D0B2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E84C58C5-D8C1-419E-A3FB-991E7B2D0B2D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5F9E59C2-7453-462E-A037-3EDB8D2DBE2F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5F9E59C2-7453-462E-A037-3EDB8D2DBE2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5F9E59C2-7453-462E-A037-3EDB8D2DBE2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5F9E59C2-7453-462E-A037-3EDB8D2DBE2F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -118,6 +150,11 @@ Global
 		{D364E0F3-768F-4215-BEE0-773841D9D288} = {A5CF1EB3-54F4-4CD9-91C7-3B461206A9C9}
 		{D5422C45-1A75-4A8D-A025-4A7F8C94850D} = {21A17497-8635-4F19-84FF-741ECFC537E7}
 		{02560B49-62BE-4A42-8510-6BBCF9997039} = {21A17497-8635-4F19-84FF-741ECFC537E7}
+		{AC881095-DB25-4984-8614-176B525E20A4} = {A5CF1EB3-54F4-4CD9-91C7-3B461206A9C9}
+		{09DE3F5F-F850-4B4D-A347-F5FABA2CEBA3} = {BEF8F849-C62F-4FCE-8A2A-2A0B8A4FE7C8}
+		{9B3B7DE7-E708-4B44-BF85-F1E38D40B98F} = {21A17497-8635-4F19-84FF-741ECFC537E7}
+		{E84C58C5-D8C1-419E-A3FB-991E7B2D0B2D} = {21A17497-8635-4F19-84FF-741ECFC537E7}
+		{5F9E59C2-7453-462E-A037-3EDB8D2DBE2F} = {229E82AD-AC00-41E1-B566-04B5E69699D7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {21D598B0-2383-4B22-826D-E7FB4921BD66}

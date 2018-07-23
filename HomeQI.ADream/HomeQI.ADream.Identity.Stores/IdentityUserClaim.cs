@@ -3,6 +3,7 @@
 
 using HomeQI.ADream.Entities.Framework;
 using System;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace HomeQI.Adream.Identity
@@ -23,17 +24,20 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// Gets or sets the primary key of the user associated with this claim.
         /// </summary>
+        [Required]
         public virtual TKey UserId { get; set; }
 
         /// <summary>
         /// Gets or sets the claim type for this claim.
         /// </summary>
-        public virtual string ClaimType { get; set; }
+        [Required]
+        public virtual string ClaimType { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets or sets the claim value for this claim.
         /// </summary>
-        public virtual string ClaimValue { get; set; }
+        [Required]
+        public virtual string ClaimValue { get; set; } = string.Empty;
 
         /// <summary>
         /// Converts the entity into a Claim instance.

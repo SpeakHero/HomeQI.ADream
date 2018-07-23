@@ -3,6 +3,8 @@
 
 using HomeQI.ADream.Entities.Framework;
 using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace HomeQI.Adream.Identity
 {
@@ -58,18 +60,20 @@ namespace HomeQI.Adream.Identity
         /// <summary>
         /// Gets or sets the name for this role.
         /// </summary>
-        public virtual string Name { get; set; }
+        [Required]
+        public virtual string Name { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets or sets the normalized name for this role.
+        /// 获取或设置此角色的规范化名称。
         /// </summary>
-        public virtual string NormalizedName { get; set; }
+        [Required]
+        public virtual string NormalizedName { get; set; } = string.Empty;
 
         /// <summary>
         /// 一个随机值，每当角色被保存到商店时，都应该改变它。
         /// </summary>
+        [Required]
         public virtual string ConcurrencyStamp { get; set; } = Guid.NewGuid().ToString();
-
         /// <summary>
         /// Returns the name of the role.
         /// </summary>

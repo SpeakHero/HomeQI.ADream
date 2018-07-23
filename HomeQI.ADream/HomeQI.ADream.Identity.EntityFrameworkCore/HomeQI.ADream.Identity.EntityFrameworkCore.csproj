@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\HomeQi.Adream.Identity\HomeQi.Adream.Identity.csproj" />
+    <ProjectReference Include="..\HomeQi.Adream.Identity\HomeQI.Adream.Identity.csproj" />
   </ItemGroup>
 
 </Project>

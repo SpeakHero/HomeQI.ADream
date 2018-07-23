@@ -1,0 +1,7 @@
+﻿{
+  "SmsConfig": {
+    "CorpID": "CQLKJ0004224",
+    "Pwd": "123456@",
+    "Url": "https://mb345.com/utf8/BatchSend2.aspx"
+  }
+}

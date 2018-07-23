@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System;
-using HomeQI.ADream.Infrastructure.Utilities;
-namespace HomeQi.ADream.APIGateway
+using System.Net;
+
+namespace HomeQI.ADream.APIGateway
 {
     public class Program
     {

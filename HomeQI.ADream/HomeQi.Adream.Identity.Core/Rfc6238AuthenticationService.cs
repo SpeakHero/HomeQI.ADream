@@ -84,7 +84,7 @@ namespace HomeQI.Adream.Identity
                 throw new ArgumentNullEx(nameof(securityToken));
             }
 
-            // Allow a variance of no greater than 9 minutes in either direction
+            // 允许在任一方向上不大于9分钟的方差
             var currentTimeStep = GetCurrentTimeStepNumber();
             using (var hashAlgorithm = new HMACSHA1(securityToken))
             {

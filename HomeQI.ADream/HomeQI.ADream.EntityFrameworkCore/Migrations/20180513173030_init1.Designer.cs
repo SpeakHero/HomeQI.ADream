@@ -32,7 +32,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("Controller")
                         .IsRequired();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -42,7 +42,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsAllowAnonymous");
 
@@ -56,7 +56,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<int>("ShowSort");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -76,7 +76,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("ConcurrencyStamp");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -86,7 +86,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsDeleted");
 
@@ -95,7 +95,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("NormalizedName");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -121,7 +121,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("ClaimValue");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -131,7 +131,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsDeleted");
 
@@ -143,7 +143,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("RoleId");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -163,7 +163,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("ConcurrencyStamp");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -173,7 +173,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<string>("Email")
                         .HasMaxLength(50);
@@ -184,7 +184,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<bool>("LockoutEnabled");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<DateTime?>("LockoutEnd");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(50);
@@ -201,7 +201,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<int>("Sex");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -229,7 +229,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("ClaimValue");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -239,7 +239,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsDeleted");
 
@@ -249,7 +249,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("Regular");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -266,7 +266,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -276,7 +276,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsDeleted");
 
@@ -286,7 +286,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("ProviderKey");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -304,7 +304,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -314,14 +314,14 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("RoleId")
                         .IsRequired();
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -340,7 +340,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
                         .HasMaxLength(50);
@@ -350,7 +350,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
                     b.Property<string>("EditeUser")
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime");
+                    b.Property<DateTime>("EditedTime");
 
                     b.Property<bool>("IsDeleted");
 
@@ -358,7 +358,7 @@ namespace HomeQI.ADream.EntityFrameworkCore.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<DateTimeOffset>("TimeStamp")
+                    b.Property<DateTime>("TimeStamp")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 

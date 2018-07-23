@@ -12,7 +12,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HomeQi.Adream.Identity
+namespace HomeQI.Adream.Identity
 {
     public class TokenManager
     {
@@ -66,14 +66,14 @@ namespace HomeQi.Adream.Identity
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_settings.Secret);
             var claims = new Claim[] {
+                            new Claim(nameof(IdentityUser),user.ToJson()),
                             new Claim(JwtClaimTypes.Audience,_settings.Aud),
                             new Claim(JwtClaimTypes.Issuer,_settings.Iss),
                             new Claim(JwtClaimTypes.Id, user.Id),
                             new Claim( ClaimTypes.Sid, httpContextAccessor.HttpContext.Session.Id),
                             new Claim(JwtClaimTypes.Name, user.UserName),
-                              new Claim( ClaimTypes.Name, user.UserName),
+                            new Claim( ClaimTypes.Name, user.UserName),
                         };
-            var identity = new ClaimsIdentity(claims);
             var role = await userManager.GetRolesAsync(user);
             if (role != null)
             {
@@ -120,7 +120,7 @@ namespace HomeQi.Adream.Identity
             {
                 predicate = d => d.PhoneNumber.Equals(phone);
             }
-            return await userManager.FindAsync(s => new IdentityUser { Id = s.Id, UserName = s.UserName, PhoneNumber = s.PhoneNumber, Email = s.Email, LockoutEnabled = s.LockoutEnabled, LockoutEnd = s.LockoutEnd, EmailConfirmed = s.EmailConfirmed, PhoneNumberConfirmed = s.PhoneNumberConfirmed, PasswordHash = s.PasswordHash, TwoFactorEnabled = s.TwoFactorEnabled, SecurityStamp = s.SecurityStamp, ConcurrencyStamp = s.ConcurrencyStamp }, predicate);
+            return await userManager.FindAsync(s => new IdentityUser { Id = s.Id, UserName = s.UserName, PhoneNumber = s.PhoneNumber, Email = s.Email, LockoutEnabled = s.LockoutEnabled, LockoutEnd = s.LockoutEnd, EmailConfirmed = s.EmailConfirmed, PhoneNumberConfirmed = s.PhoneNumberConfirmed, PasswordHash = s.PasswordHash, TwoFactorEnabled = s.TwoFactorEnabled, SecurityStamp = s.SecurityStamp, ConcurrencyStamp = s.ConcurrencyStamp, AccessFailedCount = s.AccessFailedCount }, predicate);
         }
     }
 }

@@ -12,7 +12,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="configuration.json" />
+    <Content Remove="nlog.config" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Areas\Default\Data\" />
+    <Folder Include="Areas\Default\Models\" />
+    <Folder Include="Areas\Default\Views\" />
     <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="configuration.json" />
+    <None Include="nlog.config">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>
@@ -22,10 +37,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\HomeQI.ADream.Identity.EntityFrameworkCore\HomeQI.ADream.Identity.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="..\Identity\HomeQI.ADream.Identity.ViewModels\HomeQI.ADream.Identity.ViewModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="appsettings.json">
+    <Content Update="Config\appsettings.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>

@@ -622,7 +622,7 @@
           "Kind": "Method",
           "Name": "get_LockoutEnd",
           "Parameters": [],
-          "ReturnType": "System.Nullable<System.DateTimeOffset>",
+          "ReturnType": "System.Nullable<System.DateTime>",
           "Virtual": true,
           "Visibility": "Public",
           "GenericParameter": []
@@ -633,7 +633,7 @@
           "Parameters": [
             {
               "Name": "value",
-              "Type": "System.Nullable<System.DateTimeOffset>"
+              "Type": "System.Nullable<System.DateTime>"
             }
           ],
           "ReturnType": "System.Void",
@@ -2478,7 +2478,7 @@
               "DefaultValue": "default(System.Threading.CancellationToken)"
             }
           ],
-          "ReturnType": "System.Threading.Tasks.Task<System.Nullable<System.DateTimeOffset>>",
+          "ReturnType": "System.Threading.Tasks.Task<System.Nullable<System.DateTime>>",
           "Virtual": true,
           "ImplementedInterface": "HomeQI.Adream.Identity.IUserLockoutStore<T0>",
           "Visibility": "Public",
@@ -2494,7 +2494,7 @@
             },
             {
               "Name": "lockoutEnd",
-              "Type": "System.Nullable<System.DateTimeOffset>"
+              "Type": "System.Nullable<System.DateTime>"
             },
             {
               "Name": "cancellationToken",

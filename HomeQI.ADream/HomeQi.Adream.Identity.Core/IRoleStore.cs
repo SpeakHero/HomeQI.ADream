@@ -1,6 +1,8 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using HomeQI.ADream.Entities.Framework;
+using HomeQI.ADream.EntityFrameworkCore;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,32 +13,8 @@ namespace HomeQI.Adream.Identity
     /// Provides an abstraction for a storage and management of roles.
     /// </summary>
     /// <typeparam name="TRole">The type that represents a role.</typeparam>
-    public interface IRoleStore<TRole> : IDisposable where TRole : class
+    public interface IRoleStore<TRole> : IEntityStore<TRole, IdentityResult, IdentityError>, IDisposable where TRole : EntityBase<string>
     {
-        /// <summary>
-        /// Creates a new role in a store as an asynchronous operation.
-        /// </summary>
-        /// <param name="role">The role to create in the store.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the <see cref="IdentityResult"/> of the asynchronous query.</returns>
-        Task<IdentityResult> CreateAsync(TRole role, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Updates a role in a store as an asynchronous operation.
-        /// </summary>
-        /// <param name="role">The role to update in the store.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the <see cref="IdentityResult"/> of the asynchronous query.</returns>
-        Task<IdentityResult> UpdateAsync(TRole role, CancellationToken cancellationToken);
-
-        /// <summary>
-        /// Deletes a role from the store as an asynchronous operation.
-        /// </summary>
-        /// <param name="role">The role to delete from the store.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that represents the <see cref="IdentityResult"/> of the asynchronous query.</returns>
-        Task<IdentityResult> DeleteAsync(TRole role, CancellationToken cancellationToken);
-
         /// <summary>
         /// Gets the ID for a role from the store as an asynchronous operation.
         /// </summary>
@@ -78,15 +56,6 @@ namespace HomeQI.Adream.Identity
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
         Task SetNormalizedRoleNameAsync(TRole role, string normalizedName, CancellationToken cancellationToken);
-
-
-        /// <summary>
-        /// Finds the role who has the specified ID as an asynchronous operation.
-        /// </summary>
-        /// <param name="roleId">The role ID to look for.</param>
-        /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
-        /// <returns>A <see cref="Task{TResult}"/> that result of the look up.</returns>
-        Task<TRole> FindByIdAsync(string roleId, CancellationToken cancellationToken);
 
         /// <summary>
         /// Finds the role who has the specified normalized name as an asynchronous operation.

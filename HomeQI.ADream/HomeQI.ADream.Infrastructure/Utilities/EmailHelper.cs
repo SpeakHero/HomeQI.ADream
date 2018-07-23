@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using System;
 using HomeQI.ADream.Infrastructure.Core;
 
-namespace HomeQI.ADream.Infrastructure.Utilities
+namespace HomeQI.ADream.Infrastructure.HomeQI.ADreamities
 {
     public class EmailHelper
     {

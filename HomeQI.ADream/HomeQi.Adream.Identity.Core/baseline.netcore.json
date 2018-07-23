@@ -2320,7 +2320,7 @@
               "Type": "System.Threading.CancellationToken"
             }
           ],
-          "ReturnType": "System.Threading.Tasks.Task<System.Nullable<System.DateTimeOffset>>",
+          "ReturnType": "System.Threading.Tasks.Task<System.Nullable<System.DateTime>>",
           "GenericParameter": []
         },
         {
@@ -2333,7 +2333,7 @@
             },
             {
               "Name": "lockoutEnd",
-              "Type": "System.Nullable<System.DateTimeOffset>"
+              "Type": "System.Nullable<System.DateTime>"
             },
             {
               "Name": "cancellationToken",
@@ -6723,7 +6723,7 @@
               "Type": "T0"
             }
           ],
-          "ReturnType": "System.Threading.Tasks.Task<System.Nullable<System.DateTimeOffset>>",
+          "ReturnType": "System.Threading.Tasks.Task<System.Nullable<System.DateTime>>",
           "Virtual": true,
           "Visibility": "Public",
           "GenericParameter": []
@@ -6738,7 +6738,7 @@
             },
             {
               "Name": "lockoutEnd",
-              "Type": "System.Nullable<System.DateTimeOffset>"
+              "Type": "System.Nullable<System.DateTime>"
             }
           ],
           "ReturnType": "System.Threading.Tasks.Task<HomeQI.Adream.Identity.IdentityResult>",

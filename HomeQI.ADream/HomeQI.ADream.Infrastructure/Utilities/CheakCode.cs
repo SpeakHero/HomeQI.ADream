@@ -5,8 +5,7 @@ using System.Drawing.Imaging;
 using System.Drawing.Text;
 using System.IO;
 using System.Linq;
-using System.Linq.Expressions;
-namespace HomeQI.ADream.Infrastructure.Utilities
+namespace System.Security
 {
     public class CheakCode
     {

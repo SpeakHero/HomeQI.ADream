@@ -1,6 +1,4 @@
-﻿using HomeQi.Adream.Identity;
-using HomeQI.ADream.Infrastructure.Utilities;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Diagnostics;
 using System.Drawing;

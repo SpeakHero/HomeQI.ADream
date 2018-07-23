@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace HomeQi.Adream.Identity
+namespace HomeQI.Adream.Identity
 {
     public class RoleManager : RoleManager<IdentityRole>
     {

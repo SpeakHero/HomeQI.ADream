@@ -3,6 +3,7 @@
 
 using HomeQI.ADream.EntityFrameworkCore;
 using HomeQI.ADream.Infrastructure.Core;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -21,7 +22,7 @@ namespace HomeQI.Adream.Identity
     {
 
 
-        public RoleStoreBase(TDbcontext context, BaseErrorDescriber errorDescriber, ILoggerFactory loggerFactory) : base(context, errorDescriber, loggerFactory)
+        public RoleStoreBase(TDbcontext context, BaseErrorDescriber errorDescriber, ILoggerFactory loggerFactory, IConfiguration configuration) : base(context, errorDescriber, loggerFactory, configuration)
         {
         }
 
@@ -138,7 +139,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="claim">The claim to add to the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public abstract Task AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default);
+        public abstract Task<IdentityResult> AddClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// Removes the <paramref name="claim"/> given from the specified <paramref name="role"/>.
@@ -147,7 +148,7 @@ namespace HomeQI.Adream.Identity
         /// <param name="claim">The claim to remove from the role.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        public abstract Task RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default);
+        public abstract Task<IdentityResult> RemoveClaimAsync(TRole role, Claim claim, CancellationToken cancellationToken = default);
 
         /// <summary>
         /// A navigation property for the roles the store contains.

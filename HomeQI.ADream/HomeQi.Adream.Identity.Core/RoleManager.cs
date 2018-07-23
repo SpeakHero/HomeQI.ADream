@@ -1,30 +1,26 @@
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
+using HomeQI.Adream.Identity.Core;
+using HomeQI.ADream.Entities.Framework;
+using HomeQI.ADream.EntityFrameworkCore;
+using HomeQI.ADream.Infrastructure.Core;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Security.Claims;
-using System.Threading;
 using System.Threading.Tasks;
-using HomeQI.Adream.Identity.Core;
-using Microsoft.Extensions.Logging;
 
 namespace HomeQI.Adream.Identity
 {
     /// <summary>
-    /// Provides the APIs for managing roles in a persistence store.
+    /// 提供用于管理持久存储中的角色的API。
     /// </summary>
-    /// <typeparam name="TRole">The type encapsulating a role.</typeparam>
-    public class RoleManager<TRole> : IDisposable where TRole : class
+    /// <typeparam name="TRole">该类型封装了一个角色。</typeparam>
+    public class RoleManager<TRole> : ManagerBase<TRole, IRoleStore<TRole>, IdentityResult, IdentityError> where TRole : EntityBase<string>
     {
-        private bool _disposed;
-
-        /// <summary>
-        /// The cancellation token used to cancel operations.
-        /// </summary>
-        protected virtual CancellationToken CancellationToken => CancellationToken.None;
-
         /// <summary>
         /// Constructs a new instance of <see cref="RoleManager{TRole}"/>.
         /// </summary>
@@ -37,13 +33,9 @@ namespace HomeQI.Adream.Identity
             IEnumerable<IRoleValidator<TRole>> roleValidators,
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
-            ILogger<RoleManager<TRole>> logger)
+            ILogger<RoleManager<TRole>> logger) : base(store)
         {
-            if (store == null)
-            {
-                throw new ArgumentNullEx(nameof(store));
-            }
-            Store = store;
+            Store = store ?? throw new ArgumentNullEx(nameof(store));
             KeyNormalizer = keyNormalizer;
             ErrorDescriber = errors;
             Logger = logger;
@@ -56,13 +48,6 @@ namespace HomeQI.Adream.Identity
                 }
             }
         }
-
-        /// <summary>
-        /// Gets the persistence store this instance operates over.
-        /// </summary>
-        /// <value>The persistence store this instance operates over.</value>
-        protected IRoleStore<TRole> Store { get; private set; }
-
         /// <summary>
         /// Gets the <see cref="ILogger"/> used to log messages from the manager.
         /// </summary>
@@ -78,18 +63,18 @@ namespace HomeQI.Adream.Identity
         public IList<IRoleValidator<TRole>> RoleValidators { get; } = new List<IRoleValidator<TRole>>();
 
         /// <summary>
-        /// Gets the <see cref="IdentityErrorDescriber"/> used to provider error messages.
+        /// Gets the <see cref="IdentityErrorDescriber"/> 用于提供错误消息。
         /// </summary>
         /// <value>
-        /// The <see cref="IdentityErrorDescriber"/> used to provider error messages.
+        /// The <see cref="IdentityErrorDescriber"/> 用于提供错误消息。
         /// </value>
         public IdentityErrorDescriber ErrorDescriber { get; set; }
 
         /// <summary>
-        /// Gets the normalizer to use when normalizing role names to keys.
+        /// 获取在将角色名规范化到键时使用的规范化器。
         /// </summary>
         /// <value>
-        /// The normalizer to use when normalizing role names to keys.
+        /// 将角色名规范化为键时使用的规范化器。
         /// </value>
         public ILookupNormalizer KeyNormalizer { get; set; }
 
@@ -107,17 +92,15 @@ namespace HomeQI.Adream.Identity
         {
             get
             {
-                var queryableStore = Store as IQueryableRoleStore<TRole>;
-                if (queryableStore == null)
+                if (!(Store is IQueryableRoleStore<TRole> queryableStore))
                 {
                     throw new NotSupportedException(Resources.StoreNotIQueryableRoleStore);
                 }
                 return queryableStore.Roles;
             }
         }
-
         /// <summary>
-        /// Gets a flag indicating whether the underlying persistence store supports returning an <see cref="IQueryable"/> collection of roles.
+        /// 获取指示基础持久存储是否支持返回的标志。 <see cref="IQueryable"/> collection of roles.
         /// </summary>
         /// <value>
         /// true if the underlying persistence store supports returning an <see cref="IQueryable"/> collection of roles, otherwise false.
@@ -190,7 +173,7 @@ namespace HomeQI.Adream.Identity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> for the update.
         /// </returns>
-        public virtual Task<IdentityResult> UpdateAsync(TRole role)
+        public virtual Task<IdentityResult> UpdateAsync(TRole role, params string[] paramss)
         {
             ThrowIfDisposed();
             if (role == null)
@@ -198,7 +181,7 @@ namespace HomeQI.Adream.Identity
                 throw new ArgumentNullEx(nameof(role));
             }
 
-            return UpdateRoleAsync(role);
+            return UpdateRoleAsync(role, paramss);
         }
 
         /// <summary>
@@ -308,12 +291,12 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Finds the role associated with the specified <paramref name="roleName"/> if any.
+        /// 查找与指定的关联的角色。 <paramref name="roleName"/> if any.
         /// </summary>
         /// <param name="roleName">The name of the role to be returned.</param>
         /// <returns>
-        /// The <see cref="Task"/> that represents the asynchronous operation, containing the role 
-        /// associated with the specified <paramref name="roleName"/>
+        /// The <see cref="Task"/> 表示异步操作，包含角色。
+        //与指定的关联<paramref name="roleName"/>
         /// </returns>
         public virtual Task<TRole> FindByNameAsync(string roleName)
         {
@@ -327,9 +310,9 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Adds a claim to a role.
+        ///向角色添加声明。
         /// </summary>
-        /// <param name="role">The role to add the claim to.</param>
+        /// <param name="role">添加索赔的角色。</param>
         /// <param name="claim">The claim to add.</param>
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/>
@@ -347,13 +330,11 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(role));
             }
-
-            await claimStore.AddClaimAsync(role, claim, CancellationToken);
-            return await UpdateRoleAsync(role);
+            return await claimStore.AddClaimAsync(role, claim, CancellationToken);
         }
 
         /// <summary>
-        /// Removes a claim from a role.
+        /// 删除角色的声明。
         /// </summary>
         /// <param name="role">The role to remove the claim from.</param>
         /// <param name="claim">The claim to remove.</param>
@@ -369,15 +350,13 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(role));
             }
-
-            await claimStore.RemoveClaimAsync(role, claim, CancellationToken);
-            return await UpdateRoleAsync(role);
+            return await claimStore.RemoveClaimAsync(role, claim, CancellationToken);
         }
 
         /// <summary>
-        /// Gets a list of claims associated with the specified <paramref name="role"/>.
+        /// 获取与指定的关联的声明的列表。 <paramref name="role"/>.
         /// </summary>
-        /// <param name="role">The role whose claims should be returned.</param>
+        /// <param name="role">应该归还索赔的角色。</param>
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, containing the list of <see cref="Claim"/>s
         /// associated with the specified <paramref name="role"/>.
@@ -393,20 +372,13 @@ namespace HomeQI.Adream.Identity
             return claimStore.GetClaimsAsync(role, CancellationToken);
         }
 
-        /// <summary>
-        /// Releases all resources used by the role manager.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+
 
         /// <summary>
-        /// Releases the unmanaged resources used by the role manager and optionally releases the managed resources.
+        /// 释放角色管理器所使用的非托管资源，并可选地释放托管资源。
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing && !_disposed)
             {
@@ -441,11 +413,11 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Called to update the role after validating and updating the normalized role name.
+        /// 在验证和更新归一化角色名之后调用该函数来更新角色。
         /// </summary>
         /// <param name="role">The role.</param>
-        /// <returns>Whether the operation was successful.</returns>
-        protected virtual async Task<IdentityResult> UpdateRoleAsync(TRole role)
+        /// <returns>操作是否已成功完成.</returns>
+        protected virtual async Task<IdentityResult> UpdateRoleAsync(TRole role, params string[] paramss)
         {
             var result = await ValidateRoleAsync(role);
             if (!result.Succeeded)
@@ -453,29 +425,19 @@ namespace HomeQI.Adream.Identity
                 return result;
             }
             await UpdateNormalizedRoleNameAsync(role);
-            return await Store.UpdateAsync(role, CancellationToken);
+            return await Store.UpdateAsync(role, CancellationToken, paramss);
         }
 
-        // IRoleClaimStore methods
-        private IRoleClaimStore<TRole> GetClaimStore()
+        // IRoleClaimStore 存储方法
+        protected IRoleClaimStore<TRole> GetClaimStore()
         {
-            var cast = Store as IRoleClaimStore<TRole>;
-            if (cast == null)
+            if (!(Store is IRoleClaimStore<TRole> cast))
             {
                 throw new NotSupportedException(Resources.StoreNotIRoleClaimStore);
             }
             return cast;
         }
 
-        /// <summary>
-        /// Throws if this class has been disposed.
-        /// </summary>
-        protected void ThrowIfDisposed()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-        }
+
     }
 }

@@ -19,7 +19,7 @@ namespace HomeQI.ADream.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        DateTimeOffset TimeSpan { get; set; }
+        DateTime EditedTime { get; set; }
     }
     /// <summary>
     /// 
@@ -29,7 +29,7 @@ namespace HomeQI.ADream.Infrastructure
         /// <summary>
         /// 
         /// </summary>
-        public DateTimeOffset TimeSpan { get; set; }
+        public DateTime EditedTime { get; set; }
 
         /// <summary>
         /// 
@@ -67,11 +67,11 @@ namespace HomeQI.ADream.Infrastructure
         /// <param name="id"></param>
         /// <param name="name"></param>
         /// <param name="timespan"></param>
-        public SimpleEntity(string id, string name,DateTimeOffset timespan)
+        public SimpleEntity(string id, string name, DateTime timespan)
         {
             Id = id;
             Name = name;
-            TimeSpan = timespan;
+            EditedTime = timespan;
         }
     }
 }

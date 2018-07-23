@@ -1,4 +1,5 @@
-﻿using HomeQI.Adream.Identity;
+﻿using AutoMapper;
+using HomeQI.Adream.Identity;
 using HomeQI.Adream.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -13,6 +14,8 @@ using NLog.Extensions.Logging;
 using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Collections.Generic;
+using System.Text;
+
 namespace HomeQI.ADream.Identity.Web
 {
     /// <summary>
@@ -44,7 +47,7 @@ namespace HomeQI.ADream.Identity.Web
             services.AddSwaggerGen(c =>
             {
 
-
+                // services.AddNCacheDistributedCache();
                 //添加header验证信息
                 //c.OperationFilter<SwaggerHeader>();
                 var security = new Dictionary<string, IEnumerable<string>> { { "Bearer", new string[] { } }, };
@@ -72,18 +75,26 @@ namespace HomeQI.ADream.Identity.Web
             loggerFactory2.AddDebug();
             services.AddIdentityJwtBear();
             services.AddADeamServices();
-            services.AddSingleton<IDistributedCache>(
-     serviceProvider =>
-         new RedisCache(new RedisCacheOptions
-         {
-             Configuration = "127.0.0.1:6379",
-             InstanceName = "Identity:"
-         }));
+            var csredis = new CSRedis.CSRedisClient(null,
+                "127.0.0.1:6379,defaultDatabase=11,poolsize=10,ssl=false,writeBuffer=10240,prefix=key_10",
+                "127.0.0.1:6379,defaultDatabase=12,poolsize=11,ssl=false,writeBuffer=10240,prefix=key_11",
+                "127.0.0.1:6379,defaultDatabase=13,poolsize=12,ssl=false,writeBuffer=10240,prefix=key_12",
+                "127.0.0.1:6379,defaultDatabase=14,poolsize=13,ssl=false,writeBuffer=10240,prefix=key_13");
+            services.AddSingleton<IDistributedCache>(new ADreamRedisCache(csredis));
+            //       services.AddSingleton<IDistributedCache>(
+            //serviceProvider =>
+            //    new RedisCache(new RedisCacheOptions
+            //    {
+            //        Configuration = "127.0.0.1:6379",
+            //        InstanceName = "Identity:"
+            //    }));
             services.AddSession(o =>
             {
                 o.IdleTimeout = TimeSpan.FromHours(2);
+                o.IOTimeout = o.IdleTimeout;
             });
 
+            services.AddIdentityModelsAutoMapper();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
         /// <summary>
@@ -91,18 +102,30 @@ namespace HomeQI.ADream.Identity.Web
         /// </summary>
         /// <param name="app"></param>
         /// <param name="env"></param>
+        /// <param name="cache"></param>
         // 此方法由运行时调用。使用此方法配置HTTP请求管道。
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, IDistributedCache cache)
         {
+
+            var serverStartTimeString = DateTime.Now.ToString();
+            byte[] val = Encoding.UTF8.GetBytes(serverStartTimeString);
+            var cacheEntryOptions = new DistributedCacheEntryOptions()
+                .SetSlidingExpiration(TimeSpan.FromHours(2));
+            cache.Set("lastServerStartTime", val, cacheEntryOptions);
             if (env.IsDevelopment())
             {
+                //跳转到异常页面，异常错误展示
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
+                app.UseBrowserLink();
             }
             else
             {
                 app.UseHsts();
-            }
+                //如果错误，从定向到错误改路由
+                app.UseExceptionHandler("/Home/Error");
 
+            }
             app.UseAuthentication();//注意添加这一句，启用验证
             //启用中间件服务生成Swagger作为JSON终结点
             app.UseSwagger();
@@ -114,11 +137,32 @@ namespace HomeQI.ADream.Identity.Web
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Identity API V1");
             });
             app.UseHttpsRedirection();
+            app.UseStaticFiles();
             #region TokenAuth
             //app.UseMiddleware<TokenAuth>();
             #endregion
-            app.UseSession(new SessionOptions() { IdleTimeout = TimeSpan.FromMinutes(30) });
-            app.UseMvc();
+            app.UseSession(new SessionOptions() { IOTimeout = TimeSpan.FromHours(2), IdleTimeout = TimeSpan.FromHours(2) });
+
+
+            //设置mvc路由
+            app.UseMvc(routes =>
+            {
+                var config = Configuration.GetSection("SetHome");
+                var routestring = $"{{controller={config["Controller"]}}}/{{action={config["Action"]}}}/{{id?}}";
+                var area = config["Area"];
+                if (area.IsNotNullOrEmpty())
+                {
+                    routestring = $"{{area={area}}}/{routestring}";
+                }
+                //这里的{id?} ？号表示可以有可无
+                routes.MapRoute(
+                    name: "default",
+                    template: routestring);
+                routes.MapRoute(
+                       name: "areaRoute",
+                       template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+            });
+
         }
     }
 }

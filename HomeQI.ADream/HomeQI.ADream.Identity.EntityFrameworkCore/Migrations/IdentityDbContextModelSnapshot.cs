@@ -17,65 +17,136 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                 .HasAnnotation("ProductVersion", "2.1.1-rtm-30846")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityPermission", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("Action")
+                        .IsRequired();
+
+                    b.Property<string>("AreaName")
+                        .IsRequired();
+
+                    b.Property<string>("Controller")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedTime");
+
+                    b.Property<string>("CretaedUser")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("Description")
+                        .IsRequired();
+
+                    b.Property<string>("EditeUser")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<DateTime>("EditedTime")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate();
+
+                    b.Property<bool>("IsAllowAnonymous");
+
+                    b.Property<bool>("IsDeleted");
+
+                    b.Property<bool>("IsEnable");
+
+                    b.Property<int>("Level");
+
+                    b.Property<string>("Params")
+                        .IsRequired();
+
+                    b.Property<int>("ShowSort");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Action")
+                        .HasName("ActionIndex");
+
+                    b.HasIndex("AreaName")
+                        .HasName("AreaNameIndex");
+
+                    b.HasIndex("Controller")
+                        .HasName("ControllerIndex");
+
+                    b.HasIndex("Params")
+                        .HasName("ParamsIndex");
+
+                    b.ToTable("Permissions");
+                });
+
             modelBuilder.Entity("HomeQI.Adream.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .IsRequired();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<bool>("IsDeleted");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedName")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
-                        .IsUnique()
                         .HasName("RoleNameIndex");
 
-                    b.ToTable("AspNetRoles");
+                    b.ToTable("Roles");
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityRoleClaim", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .IsRequired();
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .IsRequired();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -85,6 +156,12 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                         .IsRequired();
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClaimType")
+                        .HasName("ClaimTypeIndex");
+
+                    b.HasIndex("ClaimValue")
+                        .HasName("ClaimValueIndex");
 
                     b.HasIndex("RoleId");
 
@@ -99,23 +176,28 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                     b.Property<int>("AccessFailedCount");
 
                     b.Property<string>("ConcurrencyStamp")
-                        .IsConcurrencyToken();
+                        .IsConcurrencyToken()
+                        .IsRequired();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
                     b.Property<string>("Email")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed");
@@ -124,55 +206,72 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
 
                     b.Property<bool>("LockoutEnabled");
 
-                    b.Property<DateTimeOffset?>("LockoutEnd");
+                    b.Property<DateTime>("LockoutEnd");
 
                     b.Property<string>("NormalizedEmail")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.Property<string>("NormalizedUserName")
+                        .IsRequired()
                         .HasMaxLength(256);
 
-                    b.Property<string>("PasswordHash");
+                    b.Property<string>("PasswordHash")
+                        .IsRequired();
 
-                    b.Property<string>("PhoneNumber");
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired();
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("SecurityStamp");
+                    b.Property<string>("SecurityStamp")
+                        .IsRequired();
 
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
+                        .IsRequired()
                         .HasMaxLength(256);
 
                     b.HasKey("Id");
 
-                    b.HasIndex("NormalizedEmail")
+                    b.HasIndex("Email")
                         .HasName("EmailIndex");
+
+                    b.HasIndex("NormalizedEmail")
+                        .HasName("NormalizedEmailIndex");
+
+                    b.HasIndex("PhoneNumber")
+                        .HasName("PhoneNumberIndex");
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserClaim", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<string>("ClaimType");
+                    b.Property<string>("ClaimType")
+                        .IsRequired();
 
-                    b.Property<string>("ClaimValue");
+                    b.Property<string>("ClaimValue")
+                        .IsRequired();
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -183,28 +282,37 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("ClaimType")
+                        .HasName("ClaimTypeIndex");
+
+                    b.HasIndex("ClaimValue")
+                        .HasName("ClaimValueIndex");
+
                     b.HasIndex("UserId");
 
                     b.ToTable("UserClaims");
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserLogin", b =>
                 {
                     b.Property<string>("LoginProvider");
 
                     b.Property<string>("ProviderKey");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -213,7 +321,8 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<string>("ProviderDisplayName");
+                    b.Property<string>("ProviderDisplayName")
+                        .IsRequired();
 
                     b.Property<string>("UserId")
                         .IsRequired();
@@ -227,23 +336,26 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                     b.ToTable("UserLogins");
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserRole", b =>
                 {
                     b.Property<string>("UserId");
 
                     b.Property<string>("RoleId");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -261,7 +373,7 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                     b.ToTable("UserRoles");
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserToken", b =>
                 {
                     b.Property<string>("UserId");
 
@@ -269,17 +381,20 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<DateTimeOffset>("CreatedTime");
+                    b.Property<DateTime>("CreatedTime");
 
                     b.Property<string>("CretaedUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<string>("Description");
+                    b.Property<string>("Description")
+                        .IsRequired();
 
                     b.Property<string>("EditeUser")
+                        .IsRequired()
                         .HasMaxLength(50);
 
-                    b.Property<DateTimeOffset>("EditedTime")
+                    b.Property<DateTime>("EditedTime")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate();
 
@@ -288,7 +403,8 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
 
                     b.Property<bool>("IsDeleted");
 
-                    b.Property<string>("Value");
+                    b.Property<string>("Value")
+                        .IsRequired();
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -297,7 +413,7 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityRoleClaim<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityRoleClaim", b =>
                 {
                     b.HasOne("HomeQI.Adream.Identity.IdentityRole")
                         .WithMany()
@@ -305,7 +421,7 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserClaim<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserClaim", b =>
                 {
                     b.HasOne("HomeQI.Adream.Identity.IdentityUser")
                         .WithMany()
@@ -313,7 +429,7 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserLogin<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserLogin", b =>
                 {
                     b.HasOne("HomeQI.Adream.Identity.IdentityUser")
                         .WithMany()
@@ -321,7 +437,7 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserRole<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserRole", b =>
                 {
                     b.HasOne("HomeQI.Adream.Identity.IdentityRole")
                         .WithMany()
@@ -334,7 +450,7 @@ namespace HomeQI.ADream.Identity.EntityFrameworkCore.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserToken<string>", b =>
+            modelBuilder.Entity("HomeQI.Adream.Identity.IdentityUserToken", b =>
                 {
                     b.HasOne("HomeQI.Adream.Identity.IdentityUser")
                         .WithMany()

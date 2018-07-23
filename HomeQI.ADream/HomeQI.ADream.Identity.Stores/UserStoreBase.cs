@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
 
 using HomeQI.ADream.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace HomeQI.Adream.Identity
         /// Creates a new instance.
         /// </summary>
         /// <param name="describer">The <see cref="IdentityErrorDescriber"/> used to describe store errors.</param>
-        public UserStoreBase(TDbcontext dbcontext, IdentityErrorDescriber describer, ILoggerFactory loggerFactory) : base(dbcontext, describer, loggerFactory)
+        public UserStoreBase(TDbcontext dbcontext, IdentityErrorDescriber describer, ILoggerFactory loggerFactory, IConfiguration configuration) : base(dbcontext, describer, loggerFactory, configuration)
         {
             ErrorDescriber = describer ?? throw new InvalidOperationEx(nameof(describer));
         }
@@ -235,7 +236,7 @@ namespace HomeQI.Adream.Identity
 
         public abstract Task<TUser> FindByEmailAsync(string normalizedEmail, CancellationToken cancellationToken = default);
 
-        public virtual Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken = default)
+        public virtual Task<DateTime> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();
@@ -246,7 +247,7 @@ namespace HomeQI.Adream.Identity
             return Task.FromResult(user.LockoutEnd);
         }
 
-        public virtual Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken = default)
+        public virtual Task SetLockoutEndDateAsync(TUser user, DateTime lockoutEnd, CancellationToken cancellationToken = default)
         {
             cancellationToken.ThrowIfCancellationRequested();
             ThrowIfDisposed();

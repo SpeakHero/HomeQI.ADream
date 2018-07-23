@@ -63,7 +63,7 @@ namespace HomeQI.ADream.Services
             {
                 throw new ArgumentNullEx(nameof(email));
             }
-            var tokenmodel = new TokenModel() { Sid = session.Id, Name = email, RequestIp = context.GetUserIp() }.ToJson();
+            var tokenmodel = new TokenModel() { Sid = session.Id, Name = email, RequestIp = context.Request.GetUserIp() }.ToJson();
             var len = tokenmodel.LengthReal();
 
             var token = await Task.FromResult(SecurityHelper.AES256Encrypt(tokenmodel));
@@ -87,21 +87,30 @@ namespace HomeQI.ADream.Services
         /// <returns></returns>
         public bool VerifByEmail(string code)
         {
-            var token = SecurityHelper.AES256DEncrypt(code)?.DeserializeObject<TokenModel>();
-            TokenModel tokenmodel = session.GetObjectFromJson<TokenModel>(nameof(GenerateEmailAsync));
-            if (token == null)
+            try
             {
-                return false;
-            }
-            var uip = context.GetUserIp();
-            if (uip.IsNotNullOrEmpty())
-            {
-                if (!token.RequestIp.Equals(uip))
+                var token = SecurityHelper.AES256DEncrypt(code)?.DeserializeObject<TokenModel>();
+                TokenModel tokenmodel = session.GetObjectFromJson<TokenModel>(nameof(GenerateEmailAsync));
+                if (token == null)
                 {
                     return false;
                 }
+                var uip = context.Request.GetUserIp();
+                if (uip.IsNotNullOrEmpty())
+                {
+                    if (!token.RequestIp.Equals(uip))
+                    {
+                        return false;
+                    }
+                }
+                return (tokenmodel.Name == token.Name && token.Sid == tokenmodel.Sid && DateTime.Now < token.ResponseTime.AddMinutes(token.ExpiryTime));
+
             }
-            return (tokenmodel.Name == token.Name && token.Sid == tokenmodel.Sid && DateTime.Now < token.ResponseTime.AddMinutes(token.ExpiryTime));
+            catch (Exception ex)
+            {
+                LogerHelp.Error(ex);
+                return false;
+            }
         }
     }
     public enum TokenGeneraterType

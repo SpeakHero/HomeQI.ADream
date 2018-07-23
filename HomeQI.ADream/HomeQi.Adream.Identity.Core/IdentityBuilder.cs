@@ -6,6 +6,7 @@ using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using HomeQI.Adream.Identity.Core;
+using HomeQI.ADream.Entities.Framework;
 
 namespace HomeQI.Adream.Identity
 {
@@ -142,7 +143,7 @@ namespace HomeQI.Adream.Identity
         /// </summary>
         /// <typeparam name="TUserManager">The type of the user manager to add.</typeparam>
         /// <returns>The current <see cref="IdentityBuilder"/> instance.</returns>
-        public virtual IdentityBuilder AddUserManager<TUserManager>() where TUserManager : class
+        public virtual IdentityBuilder AddUserManager<TUserManager>() where TUserManager : EntityBase
         {
             var userManagerType = typeof(UserManager<>).MakeGenericType(UserType);
             var customType = typeof(TUserManager);
@@ -162,7 +163,7 @@ namespace HomeQI.Adream.Identity
         /// </summary>
         /// <typeparam name="TRole">The role type.</typeparam>
         /// <returns>The current <see cref="IdentityBuilder"/> instance.</returns>
-        public virtual IdentityBuilder AddRoles<TRole>() where TRole : class
+        public virtual IdentityBuilder AddRoles<TRole>() where TRole : EntityBase
         {
             RoleType = typeof(TRole);
             AddRoleValidator<RoleValidator<TRole>>();

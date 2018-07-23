@@ -4,8 +4,9 @@ namespace HomeQI.ADream.EntityFrameworkCore
 {
     public partial class ADreamDbContext : DbContext
     {
-        public ADreamDbContext( DbContextOptions options) : base(options)
+        public ADreamDbContext(DbContextOptions options) : base(options)
         {
         }
+
     }
 }

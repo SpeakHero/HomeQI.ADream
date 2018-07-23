@@ -3,6 +3,8 @@
 
 using HomeQI.Adream.Identity.Core;
 using HomeQI.ADream.Entities.Framework;
+using HomeQI.ADream.EntityFrameworkCore;
+using HomeQI.ADream.Infrastructure.Core;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.Extensions.DependencyInjection;
@@ -25,7 +27,7 @@ namespace HomeQI.Adream.Identity
     /// 提供用于在持久存储中管理用户的API。
     /// </summary>
     /// <typeparam name="TUser">封装用户的类型。</typeparam>
-    public class UserManager<TUser> : IDisposable where TUser : EntityBase<string>
+    public class UserManager<TUser> : ManagerBase<TUser, IUserStore<TUser>, IdentityResult, IdentityError> where TUser : EntityBase<string>
     {
         /// <summary>
         /// 数据保护的目的是用于重置密码相关的方法。
@@ -46,14 +48,9 @@ namespace HomeQI.Adream.Identity
             new Dictionary<string, IUserTwoFactorTokenProvider<TUser>>();
 
         private TimeSpan _defaultLockout = TimeSpan.Zero;
-        private bool _disposed;
+
         private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
         private IServiceProvider _services;
-
-        /// <summary>
-        /// 取消令牌用于取消操作。
-        /// </summary>
-        protected virtual CancellationToken CancellationToken => CancellationToken.None;
 
         /// <summary>
         ///构造新实例 of <see cref="UserManager{TUser}"/>.
@@ -75,7 +72,7 @@ namespace HomeQI.Adream.Identity
             ILookupNormalizer keyNormalizer,
             IdentityErrorDescriber errors,
             IServiceProvider services,
-            ILogger<UserManager<TUser>> logger)
+            ILogger<UserManager<TUser>> logger) : base(store)
         {
             Store = store ?? throw new ArgumentNullEx(nameof(store));
             Options = optionsAccessor?.Value ?? new IdentityOptions();
@@ -119,13 +116,6 @@ namespace HomeQI.Adream.Identity
                 }
             }
         }
-
-        /// <summary>
-        /// 获取或设置管理器运行的持久性存储区。
-        /// </summary>
-        /// <value>管理器的持久存储操作结束。</value>
-        protected internal IUserStore<TUser> Store { get; set; }
-
         /// <summary>
         /// The <see cref="ILogger"/> used to log messages from the manager.
         /// </summary>
@@ -376,14 +366,7 @@ namespace HomeQI.Adream.Identity
             }
         }
 
-        /// <summary>
-        /// Releases all resources used by the user manager.
-        /// </summary>
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
+
 
         /// <summary>
         /// Returns the Name claim value if present otherwise returns null.
@@ -399,22 +382,7 @@ namespace HomeQI.Adream.Identity
             }
             return principal.FindFirstValue(Options.ClaimsIdentity.UserNameClaimType);
         }
-        public async Task<TResult> FindAsync<TResult>(Expression<Func<TUser, TResult>> selector, Expression<Func<TUser, bool>> predicate)
-        {
-            if (predicate == null)
-            {
-                return await Users.Select(selector).FirstOrDefaultAsync();
-            }
-            return await Users.Where(predicate).Select(selector).FirstOrDefaultAsync();
-        }
-        public async Task<TUser> FindAsync(Expression<Func<TUser, bool>> predicate)
-        {
-            if (predicate == null)
-            {
-                return await Users.FirstOrDefaultAsync();
-            }
-            return await Users.Where(predicate).FirstOrDefaultAsync();
-        }
+
         /// <summary>
         /// Returns the User ID claim value if present otherwise returns null.
         /// </summary>
@@ -427,15 +395,22 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(principal));
             }
-            return principal.FindFirstValue(Options.ClaimsIdentity.UserIdClaimType);
+            return principal.FindFirstValue("id");
         }
-
+        public virtual TUser GetUserFromClaims(ClaimsPrincipal principal)
+        {
+            if (principal == null)
+            {
+                throw new ArgumentNullEx(nameof(principal));
+            }
+            return principal.FindFirstValue("IdentityUser").FromJson<TUser>();
+        }
         /// <summary>
-        /// Returns the user corresponding to the IdentityOptions.ClaimsIdentity.UserIdClaimType claim in
+        /// Returns the user corresponding to the IdentityOptions.ADreamClaimsIdentity.UserIdClaimType claim in
         /// the principal or null.
         /// </summary>
         /// <param name="principal">The principal which contains the user id claim.</param>
-        /// <returns>The user corresponding to the IdentityOptions.ClaimsIdentity.UserIdClaimType claim in
+        /// <returns>The user corresponding to the IdentityOptions.ADreamClaimsIdentity.UserIdClaimType claim in
         /// the principal or null</returns>
         public virtual Task<TUser> GetUserAsync(ClaimsPrincipal principal)
         {
@@ -671,7 +646,7 @@ namespace HomeQI.Adream.Identity
 
             await Store.SetUserNameAsync(user, userName, CancellationToken);
             await UpdateSecurityStampInternal(user);
-            return await UpdateUserAsync(user);
+            return await UpdateUserAsync(user, "UserName");
         }
 
         /// <summary>
@@ -1531,7 +1506,7 @@ namespace HomeQI.Adream.Identity
                 return IdentityResult.Failed(ErrorDescriber.InvalidToken());
             }
             await store.SetEmailConfirmedAsync(user, true, CancellationToken);
-            return await UpdateUserAsync(user);
+            return await UpdateUserAsync(user, "EmailConfirmed", "ConcurrencyStamp");
         }
 
         /// <summary>
@@ -1793,18 +1768,14 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Registers a token provider.
+        /// 令牌服务提供商。
         /// </summary>
         /// <param name="providerName">The name of the provider to register.</param>
         /// <param name="provider">The provider to register.</param>
         public virtual void RegisterTokenProvider(string providerName, IUserTwoFactorTokenProvider<TUser> provider)
         {
             ThrowIfDisposed();
-            if (provider == null)
-            {
-                throw new ArgumentNullEx(nameof(provider));
-            }
-            _tokenProviders[providerName] = provider;
+            _tokenProviders[providerName] = provider ?? throw new ArgumentNullEx(nameof(provider));
         }
 
         /// <summary>
@@ -1929,7 +1900,7 @@ namespace HomeQI.Adream.Identity
 
             await store.SetTwoFactorEnabledAsync(user, enabled, CancellationToken);
             await UpdateSecurityStampInternal(user);
-            return await UpdateUserAsync(user);
+            return await store.UpdateAsync(user, CancellationToken, "TwoFactorEnabled");
         }
 
         /// <summary>
@@ -1954,7 +1925,7 @@ namespace HomeQI.Adream.Identity
                 return false;
             }
             var lockoutTime = await store.GetLockoutEndDateAsync(user, CancellationToken);
-            return lockoutTime >= DateTimeOffset.UtcNow;
+            return lockoutTime >= DateTime.UtcNow;
         }
 
         /// <summary>
@@ -1966,7 +1937,8 @@ namespace HomeQI.Adream.Identity
         /// <returns>
         /// The <see cref="Task"/> that represents the asynchronous operation, the <see cref="IdentityResult"/> of the operation
         /// </returns>
-        public virtual async Task<IdentityResult> SetLockoutEnabledAsync(TUser user, bool enabled)
+        public virtual async Task<IdentityResult> SetLockoutEnabledAsync(TUser user,
+            bool enabled)
         {
             ThrowIfDisposed();
             var store = GetUserLockoutStore();
@@ -1976,7 +1948,7 @@ namespace HomeQI.Adream.Identity
             }
 
             await store.SetLockoutEnabledAsync(user, enabled, CancellationToken);
-            return await UpdateUserAsync(user);
+            return await store.UpdateAsync(user, CancellationToken, "LockoutEnabled");
         }
 
         /// <summary>
@@ -1998,14 +1970,14 @@ namespace HomeQI.Adream.Identity
         }
 
         /// <summary>
-        /// Gets the last <see cref="DateTimeOffset"/> a user's last lockout expired, if any.
+        /// Gets the last <see cref="DateTime"/> a user's last lockout expired, if any.
         /// Any time in the past should be indicates a user is not locked out.
         /// </summary>
         /// <param name="user">The user whose lockout date should be retrieved.</param>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> that represents the lookup, a <see cref="DateTimeOffset"/> containing the last time a user's lockout expired, if any.
+        /// A <see cref="Task{TResult}"/> that represents the lookup, a <see cref="DateTime"/> containing the last time a user's lockout expired, if any.
         /// </returns>
-        public virtual async Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user)
+        public virtual async Task<DateTime?> GetLockoutEndDateAsync(TUser user)
         {
             ThrowIfDisposed();
             var store = GetUserLockoutStore();
@@ -2020,9 +1992,9 @@ namespace HomeQI.Adream.Identity
         /// Locks out a user until the specified end date has passed. Setting a end date in the past immediately unlocks a user.
         /// </summary>
         /// <param name="user">The user whose lockout date should be set.</param>
-        /// <param name="lockoutEnd">The <see cref="DateTimeOffset"/> after which the <paramref name="user"/>'s lockout should end.</param>
+        /// <param name="lockoutEnd">The <see cref="DateTime"/> after which the <paramref name="user"/>'s lockout should end.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation, containing the <see cref="IdentityResult"/> of the operation.</returns>
-        public virtual async Task<IdentityResult> SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd)
+        public virtual async Task<IdentityResult> SetLockoutEndDateAsync(TUser user, DateTime lockoutEnd)
         {
             ThrowIfDisposed();
             var store = GetUserLockoutStore();
@@ -2037,7 +2009,7 @@ namespace HomeQI.Adream.Identity
                 return IdentityResult.Failed(ErrorDescriber.UserLockoutNotEnabled());
             }
             await store.SetLockoutEndDateAsync(user, lockoutEnd, CancellationToken);
-            return await UpdateUserAsync(user);
+            return await store.UpdateAsync(user, CancellationToken, "LockoutEnd");
         }
 
         /// <summary>
@@ -2063,10 +2035,10 @@ namespace HomeQI.Adream.Identity
                 return await UpdateUserAsync(user);
             }
             Logger.LogWarning(12, "User {userId} is locked out.", await GetUserIdAsync(user));
-            await store.SetLockoutEndDateAsync(user, DateTimeOffset.UtcNow.Add(Options.Lockout.DefaultLockoutTimeSpan),
+            await store.SetLockoutEndDateAsync(user, DateTime.UtcNow.Add(Options.Lockout.DefaultLockoutTimeSpan),
                 CancellationToken);
             await store.ResetAccessFailedCountAsync(user, CancellationToken);
-            return await UpdateUserAsync(user);
+            return await store.UpdateAsync(user, CancellationToken, "AccessFailedCount");
         }
 
         /// <summary>
@@ -2088,7 +2060,7 @@ namespace HomeQI.Adream.Identity
                 return IdentityResult.Success();
             }
             await store.ResetAccessFailedCountAsync(user, CancellationToken);
-            return await UpdateUserAsync(user);
+            return await store.UpdateAsync(user, CancellationToken, "AccessFailedCount");
         }
 
         /// <summary>
@@ -2367,7 +2339,7 @@ namespace HomeQI.Adream.Identity
         /// Releases the unmanaged resources used by the role manager and optionally releases the managed resources.
         /// </summary>
         /// <param name="disposing">true to release both managed and unmanaged resources; false to release only unmanaged resources.</param>
-        protected virtual void Dispose(bool disposing)
+        protected override void Dispose(bool disposing)
         {
             if (disposing && !_disposed)
             {
@@ -2620,17 +2592,5 @@ namespace HomeQI.Adream.Identity
             }
             return cast;
         }
-
-        /// <summary>
-        /// Throws if this class has been disposed.
-        /// </summary>
-        protected void ThrowIfDisposed()
-        {
-            if (_disposed)
-            {
-                throw new ObjectDisposedException(GetType().Name);
-            }
-        }
-
     }
 }

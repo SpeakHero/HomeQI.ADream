@@ -9,24 +9,26 @@ namespace HomeQI.ADream.Entities.Framework
     }
     public abstract class EntityBase<TKey> : IEntityBase<TKey> where TKey : IEquatable<TKey>
     {
+
         [Key]
         [Display(Name = "主键")]
         public virtual TKey Id { get; set; }
         [Display(Name = "创建时间")]
-        public virtual DateTimeOffset CreatedTime { get; set; } = DateTime.Now;
+        public virtual DateTime CreatedTime { get; set; } = DateTime.Now;
         [Timestamp]
         [Display(Name = "最后修改时间")]
-        public virtual DateTimeOffset EditedTime { get; set; } = DateTime.Now;
+        public virtual DateTime EditedTime { get; set; } = DateTime.Now;
         [StringLength(50)]
         [Display(Name = "创建人")]
-
-        public virtual string CretaedUser { get; set; } = "";
+        [Required]
+        public virtual string CretaedUser { get; set; } = string.Empty;
         [StringLength(50)]
         [Display(Name = "最后编辑人员")]
-
-        public virtual string EditeUser { get; set; } = "";
+        [Required]
+        public virtual string EditeUser { get; set; } = string.Empty;
         [Display(Name = "备注说明")]
-        public virtual string Description { get; set; } = "";
+        [Required]
+        public virtual string Description { get; set; } = string.Empty;
         public virtual bool IsDeleted { get; set; } = false;
     }
 }

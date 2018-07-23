@@ -1,4 +1,4 @@
-﻿namespace HomeQI.ADream.Infrastructure.Utilities
+﻿namespace HomeQI.ADream.Infrastructure.HomeQI.ADreamities
 {
     /// <summary>
     /// 序列化类型。

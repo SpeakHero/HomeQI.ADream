@@ -10,8 +10,8 @@ namespace HomeQI.Adream.Identity
     /// <summary>
     /// 提供角色的默认验证。
     /// </summary>
-    /// <typeparam name="TRole">The type encapsulating a role.</typeparam>
-    public class RoleValidator<TRole> : IRoleValidator<TRole> where TRole : class
+    /// <typeparam name="TRole">该类型封装了一个角色。</typeparam>
+    public class RoleValidator<TRole> : IRoleValidator<TRole> where TRole : ADream.Entities.Framework.EntityBase<string>
     {
         /// <summary>
         /// Creates a new instance of <see cref="RoleValidator{TRole}"/>/

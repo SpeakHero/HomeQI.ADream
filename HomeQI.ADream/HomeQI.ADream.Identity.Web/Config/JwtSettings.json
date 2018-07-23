@@ -1,0 +1,8 @@
+﻿{
+  "JwtSettings": {
+    "Secret": "Y2F0Y2hlciUyMHdvbmclMjBsb3ZlJTIwLm5ldA==", //必须大于16个,是大于，不是大于等于
+    "Iss": "https://localhost:44338",
+    "Aud": "https://localhost:44338",
+    "DescKey": "TThvj8G5jb6GcTFZmxVwh5Cj"
+  }
+}

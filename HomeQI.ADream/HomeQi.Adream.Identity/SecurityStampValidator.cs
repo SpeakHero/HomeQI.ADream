@@ -29,11 +29,8 @@ namespace HomeQI.Adream.Identity
             {
                 throw new ArgumentNullEx(nameof(options));
             }
-            if (signInManager == null)
-            {
-                throw new ArgumentNullEx(nameof(signInManager));
-            }
-            SignInManager = signInManager;
+
+            SignInManager = signInManager ?? throw new ArgumentNullEx(nameof(signInManager));
             Options = options.Value;
             Clock = clock;
         }
@@ -71,7 +68,7 @@ namespace HomeQI.Adream.Identity
                     NewPrincipal = newPrincipal
                 };
 
-                // Note: a null principal is allowed and results in a failed authentication.
+                // 注意：允许一个空主体并导致失败的身份验证。
                 await Options.OnRefreshingPrincipal(replaceContext);
                 newPrincipal = replaceContext.NewPrincipal;
             }

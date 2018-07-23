@@ -6,7 +6,8 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using HomeQI.Adream.Identity;
 using Microsoft.Extensions.DependencyInjection.Extensions;
-using HomeQi.Adream.Identity;
+using HomeQI.Adream.Identity;
+using Microsoft.Extensions.Configuration;
 
 namespace Microsoft.Extensions.DependencyInjection
 {
@@ -18,7 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
 
         public static IdentityBuilder AddIdentity(
             this IServiceCollection services)
-            => services.AddIdentitys<IdentityUser, IdentityRole>(setupAction: null);
+            => services.AddIdentitys<IdentityUser, IdentityRole>(setupAction: null).AddDefaultTokenProviders();
 
         /// <summary>
         /// Adds and configures the identity system for the specified User and Role types.
@@ -66,10 +67,10 @@ namespace Microsoft.Extensions.DependencyInjection
                 o.Cookie.Name = IdentityConstants.TwoFactorUserIdScheme;
                 o.ExpireTimeSpan = TimeSpan.FromMinutes(5);
             });
-
+            var configuration = services.BuildServiceProvider().GetRequiredService<IConfiguration>();
+            services.Configure<IdentityOptions>(configuration.GetSection("IdentityOptions"));
             // 主机不默认添加IHTTCPCONTROXAccess
             services.AddHttpContextAccessor();
-            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             // Identity services
             //services.TryAddScoped<IUserValidator<TUser>, UserValidator<TUser>>();
             services.TryAddScoped<IPasswordValidator<TUser>, PasswordValidator<TUser>>();
@@ -88,6 +89,9 @@ namespace Microsoft.Extensions.DependencyInjection
             services.TryAddScoped<AspNetUserManager>();
             services.TryAddScoped<RoleManager>();
             services.TryAddScoped<TokenManager>();
+            services.TryAddScoped<AspNetRoleManager>();
+            services.TryAddScoped<PermissionManager>();
+            services.TryAddScoped<PermissionManager<IdentityPermission>>();
             //services.TryAddScoped<IResourceOwnerPasswordValidator, ResourceOwnerPasswordValidator>();
 
             if (setupAction != null)

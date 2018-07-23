@@ -6,7 +6,7 @@ using System.Text;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace HomeQI.ADream.Infrastructure.Utilities
+namespace HomeQI.ADream.Infrastructure.HomeQI.ADreamities
 {
     /// <summary>
     /// Xml 序列化/反序列化。

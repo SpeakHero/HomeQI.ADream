@@ -7,7 +7,7 @@ using Swashbuckle.AspNetCore.Swagger;
 using System;
 using System.Linq;
 
-namespace HomeQi.ADream.APIGateway
+namespace HomeQI.ADream.APIGateway
 {
     public class Startup
     {
@@ -32,14 +32,14 @@ namespace HomeQi.ADream.APIGateway
                 option.ApiSecret = Configuration["IdentityService:ApiSecrets:clientservice"];
             };
 
-            Action<IdentityServerAuthenticationOptions> isaOptProduct = option =>
+            void isaOptProduct(IdentityServerAuthenticationOptions option)
             {
                 option.Authority = Configuration["IdentityService:Uri"];
                 option.ApiName = "productservice";
                 option.RequireHttpsMetadata = Convert.ToBoolean(Configuration["IdentityService:UseHttps"]);
                 option.SupportedTokens = SupportedTokens.Both;
                 option.ApiSecret = Configuration["IdentityService:ApiSecrets:productservice"];
-            };
+            }
             #endregion
 
             services.AddAuthentication()

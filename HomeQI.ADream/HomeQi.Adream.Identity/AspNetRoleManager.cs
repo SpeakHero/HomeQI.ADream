@@ -3,8 +3,12 @@
 
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 using System.Threading;
+using System.Threading.Tasks;
+using HomeQI.ADream.Entities.Framework;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 
 namespace HomeQI.Adream.Identity
@@ -12,15 +16,24 @@ namespace HomeQI.Adream.Identity
 
     public class AspNetRoleManager : AspNetRoleManager<IdentityRole>
     {
-        public AspNetRoleManager(IRoleStore<IdentityRole> store, IEnumerable<IRoleValidator<IdentityRole>> roleValidators, ILookupNormalizer keyNormalizer, IdentityErrorDescriber errors, ILogger<RoleManager<IdentityRole>> logger, IHttpContextAccessor contextAccessor) : base(store, roleValidators, keyNormalizer, errors, logger, contextAccessor)
+        public AspNetRoleManager(IRoleStore<IdentityRole> store, IEnumerable<IRoleValidator<IdentityRole>> roleValidators, ILookupNormalizer keyNormalizer,
+            IdentityErrorDescriber errors, ILogger<RoleManager<IdentityRole>> logger, IHttpContextAccessor contextAccessor) : base(store, roleValidators, keyNormalizer, errors, logger, contextAccessor)
         {
+        }
+        public override Task<bool> RoleExistsAsync(string roleName)
+        {
+            if (roleName.IsNullOrEmpty())
+            {
+                throw new ArgumentNullEx(nameof(roleName));
+            }
+            return base.Store.EntitySet.AnyAsync(a => a.Name.Equals(roleName));
         }
     }
     /// <summary>
     /// 提供用于管理持久存储中的角色的API。
     /// </summary>
     /// <typeparam name="TRole">该类型封装了一个角色。</typeparam>
-    public class AspNetRoleManager<TRole> : RoleManager<TRole>, IDisposable where TRole : class
+    public class AspNetRoleManager<TRole> : RoleManager<TRole>, IDisposable where TRole : EntityBase<string>
     {
         private readonly CancellationToken _cancel;
 
@@ -48,5 +61,7 @@ namespace HomeQI.Adream.Identity
         /// The cancellation token associated with the current HttpContext.RequestAborted or CancellationToken.None if unavailable.
         /// </summary>
         protected override CancellationToken CancellationToken => _cancel;
+
+
     }
 }

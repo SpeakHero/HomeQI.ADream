@@ -1,20 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace HomeQI.ADream.Identity.Web
+﻿namespace HomeQI.ADream.Identity.Web
 {
-    using System.Security.Claims;
-    using Microsoft.IdentityModel.Tokens;
     using Microsoft.AspNetCore.Authentication.JwtBearer;
+    using Microsoft.IdentityModel.Tokens;
+    using System.Security.Claims;
+    /// <summary>
+    /// 
+    /// </summary>
     public class MyTokenValidata : ISecurityTokenValidator
     {
+        /// <summary>
+        /// 
+        /// </summary>
         //判断当前token是否有值
         public bool CanValidateToken => true;
-
+        /// <summary>
+        /// 
+        /// </summary>
         public int MaximumTokenSizeInBytes { get; set; }//顾名思义是验证token的最大bytes
-
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="securityToken"></param>
+        /// <returns></returns>
         public bool CanReadToken(string securityToken)
         {
             return true;

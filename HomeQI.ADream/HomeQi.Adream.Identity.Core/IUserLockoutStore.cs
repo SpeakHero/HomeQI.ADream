@@ -15,25 +15,25 @@ namespace HomeQI.Adream.Identity
     public interface IUserLockoutStore<TUser> : IUserStore<TUser> where TUser : ADream.Entities.Framework.EntityBase<string>
     {
         /// <summary>
-        /// Gets the last <see cref="DateTimeOffset"/> a user's last lockout expired, if any.
+        /// Gets the last <see cref="DateTime"/> a user's last lockout expired, if any.
         /// Any time in the past should be indicates a user is not locked out.
         /// </summary>
         /// <param name="user">The user whose lockout date should be retrieved.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>
-        /// A <see cref="Task{TResult}"/> that represents the result of the asynchronous query, a <see cref="DateTimeOffset"/> containing the last time
+        /// A <see cref="Task{TResult}"/> that represents the result of the asynchronous query, a <see cref="DateTime"/> containing the last time
         /// a user's lockout expired, if any.
         /// </returns>
-        Task<DateTimeOffset?> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken);
+        Task<DateTime> GetLockoutEndDateAsync(TUser user, CancellationToken cancellationToken);
 
         /// <summary>
         /// Locks out a user until the specified end date has passed. Setting a end date in the past immediately unlocks a user.
         /// </summary>
         /// <param name="user">The user whose lockout date should be set.</param>
-        /// <param name="lockoutEnd">The <see cref="DateTimeOffset"/> after which the <paramref name="user"/>'s lockout should end.</param>
+        /// <param name="lockoutEnd">The <see cref="DateTime"/> after which the <paramref name="user"/>'s lockout should end.</param>
         /// <param name="cancellationToken">The <see cref="CancellationToken"/> used to propagate notifications that the operation should be canceled.</param>
         /// <returns>The <see cref="Task"/> that represents the asynchronous operation.</returns>
-        Task SetLockoutEndDateAsync(TUser user, DateTimeOffset? lockoutEnd, CancellationToken cancellationToken);
+        Task SetLockoutEndDateAsync(TUser user, DateTime lockoutEnd, CancellationToken cancellationToken);
 
         /// <summary>
         /// Records that a failed access has occurred, incrementing the failed access count.

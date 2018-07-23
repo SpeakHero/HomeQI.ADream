@@ -1,8 +1,7 @@
-﻿using HomeQi.Adream.Identity;
-using HomeQI.Adream.Identity;
+﻿using HomeQI.Adream.Identity;
 using HomeQI.ADream.Identity.AccountViewModels;
 using HomeQI.ADream.Infrastructure.Core;
-using HomeQI.ADream.Infrastructure.Utilities;
+using HomeQI.ADream.Infrastructure.HomeQI.ADreamities;
 using HomeQI.ADream.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -14,6 +13,7 @@ using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Security;
 using System.Threading.Tasks;
 
 namespace HomeQI.ADream.Identity.Web.Controllers
@@ -137,7 +137,7 @@ namespace HomeQI.ADream.Identity.Web.Controllers
                     Logger.LogInformation(3, "注册了一个新的用户.");
                     if (!model.ByPhone)
                     {
-                        var codeEmail = await tokenGenerater.GenerateEmailAsync(model.Email);
+                        var codeEmail = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                         callbackUrl = Url.Action("ConfirmEmail", "Account", new { userId = user.Id, code = codeEmail }, protocol: HttpContext.Request.Scheme);
                         await _emailSender.SendEmailAsync(model.Email, user.UserName + ":请完成注册验证",
                             $"请点击该链接完成账号注册: <a href='{callbackUrl}'>点我完成注册！</a>有效时间为：10分钟，请你尽快填写。");
@@ -188,7 +188,7 @@ namespace HomeQI.ADream.Identity.Web.Controllers
         /// <returns></returns>
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]
+
         [Description("使用第三方账户登录")]
         public IActionResult ExternalLogin(string provider, string returnUrl = null)
         {
@@ -234,7 +234,7 @@ namespace HomeQI.ADream.Identity.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [Description("使用第三方账户登录")]
-        [ValidateAntiForgeryToken]
+
         public async Task<IActionResult> ExternalLoginConfirmation(ExternalLoginConfirmationViewModel model, string returnUrl = null)
         {
             if (ModelState.IsValid)
@@ -275,19 +275,20 @@ namespace HomeQI.ADream.Identity.Web.Controllers
             {
                 return Json(ResponseResult.Failed("输入不正确！"));
             }
-            var user = await _userManager.FindAsync(s => new IdentityUser { SecurityStamp = s.SecurityStamp, EditedTime = s.EditedTime, ConcurrencyStamp = s.ConcurrencyStamp, Id = s.Id }, p => p.Id.Equals(userId));
+            var user = await _userManager.FindAsync(s => new IdentityUser { EmailConfirmed = s.EmailConfirmed, SecurityStamp = s.SecurityStamp, EditedTime = s.EditedTime, ConcurrencyStamp = s.ConcurrencyStamp, Email = s.Email, Id = s.Id }, p => p.Id.Equals(userId));
             if (user == null)
             {
                 return Json(ResponseResult.Failed("输入不正确！"));
             }
-            if (await tokenGenerater.VerifByEmailAsync(code))
+            IdentityResult confirm = new IdentityResult();
+            if (!user.EmailConfirmed)
             {
-                var e = await _userManager.UpdateConfirmEmail(user);
-                if (e.Succeeded)
-                {
-                    await _signInManager.SignInAsync(user, isPersistent: false);
-                    return Json(await tokenManager.SignInResultAsync(user));
-                }
+                confirm = await _userManager.ConfirmEmailAsync(user, code);
+            }
+            if (confirm.Succeeded || user.EmailConfirmed)
+            {
+                await _signInManager.SignInAsync(user, isPersistent: false);
+                return Json(await tokenManager.SignInResultAsync(user));
             }
             return Json(ResponseResult.Failed("输入不正确！"));
         }

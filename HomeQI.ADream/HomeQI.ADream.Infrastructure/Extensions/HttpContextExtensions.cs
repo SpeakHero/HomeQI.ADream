@@ -7,12 +7,12 @@ namespace Microsoft.AspNetCore.Http
 {
     public static class HttpContextExtensions
     {
-        public static string GetUserIp(this HttpContext context)
+        public static string GetUserIp(this HttpRequest context)
         {
-            var ip = context.Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            var ip = context.Headers["X-Forwarded-For"].FirstOrDefault();
             if (string.IsNullOrEmpty(ip))
             {
-                ip = context.Connection.RemoteIpAddress.ToString();
+                ip = context.HttpContext.Connection.RemoteIpAddress.ToString();
             }
             return ip;
         }
@@ -50,12 +50,15 @@ namespace Microsoft.AspNetCore.Http
             var headersDictionary = request.Headers;
             var userAgent = headersDictionary[HeaderNames.UserAgent].ToString();
             string browser = "AppleWebKit.*Mobile|MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/";
-            string uAgent = request.Headers["User-Agent"];
             Regex reg = new Regex(browser);
-            return reg.IsMatch(uAgent);
+            return reg.IsMatch(userAgent);
 
         }
-
+        public static string Browser(this HttpRequest request)
+        {
+            var headersDictionary = request.Headers;
+            return headersDictionary[HeaderNames.UserAgent].ToString();
+        }
         public static Uri ToUri(this HttpRequest request)
         {
             var hostComponents = request.Host.ToUriComponent().Split(':');
@@ -88,8 +91,7 @@ namespace Microsoft.AspNetCore.Http
         }
         public static string GetCookieValue(this HttpRequest request, string key)
         {
-            string value = "";
-            var result = request.Cookies.TryGetValue(key, out value);
+            var result = request.Cookies.TryGetValue(key, out string value);
             return value;
         }
 

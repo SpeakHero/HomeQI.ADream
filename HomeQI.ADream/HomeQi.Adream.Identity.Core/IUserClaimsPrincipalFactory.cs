@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace HomeQI.Adream.Identity
 {
     /// <summary>
-    /// Provides an abstraction for a factory to create a <see cref="ClaimsPrincipal"/> from a user.
+    /// 为工厂提供一个抽象，从用户创建一个 <see cref="ClaimsPrincipal"/> from a user.
     /// </summary>
     /// <typeparam name="TUser">The type encapsulating a user.</typeparam>
     public interface IUserClaimsPrincipalFactory<TUser>

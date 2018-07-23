@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 
-namespace HomeQI.ADream.Infrastructure.Utilities
+namespace HomeQI.ADream.Infrastructure.HomeQI.ADreamities
 {
     /// <summary>
     /// Json 序列化/反序列化。

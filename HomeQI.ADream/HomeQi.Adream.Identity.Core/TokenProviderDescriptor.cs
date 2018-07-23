@@ -11,21 +11,21 @@ namespace HomeQI.Adream.Identity
     public class TokenProviderDescriptor
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenProviderDescriptor"/> class.
+        /// 初始化一个新实例 <see cref="TokenProviderDescriptor"/> class.
         /// </summary>
-        /// <param name="type">The concrete type for this token provider.</param>
+        /// <param name="type">此令牌提供程序的具体类型。</param>
         public TokenProviderDescriptor(Type type)
         {
             ProviderType = type;
         }
 
         /// <summary>
-        /// The type that will be used for this token provider.
+        ///将用于此令牌提供程序的类型。
         /// </summary>
         public Type ProviderType { get; }
 
         /// <summary>
-        /// If specified, the instance to be used for the token provider.
+        /// 如果指定，则将用于令牌提供程序的实例。
         /// </summary>
         public object ProviderInstance { get; set; }
     }

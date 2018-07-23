@@ -1,0 +1,12 @@
+﻿{
+  "MailConfigs": {
+    "EnablePwdCheck": true,
+    "EnableSSL": true,
+    "Port": 587,
+    "Pwd": "kphvjfrpspugcaie",
+    "RequireValid": true,
+    "Server": "smtp.qq.com",
+    "Title": "悦动生活",
+    "Uid": "491960352@qq.com"
+  }
+}

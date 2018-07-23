@@ -61,16 +61,15 @@ namespace HomeQI.ADream.Infrastructure.Core
             }
             return Failed(terrors.ToArray());
         }
-        private static TResult RMapper(params TError[] errors)
-        {
-            Mapper.Initialize(x =>
-            {
-                x.CreateMap<BaseResult<TResult, TError>, TResult>();
-            });
-            var bres = new BaseResult<TResult, TError>();
-            var res = Mapper.Map<TResult>(bres);
-            return res;
-
-        }
+        //private static TResult RMapper(params TError[] errors)
+        //{
+        //    Mapper.Initialize(x =>
+        //    {
+        //        x.CreateMap<BaseResult<TResult, TError>, TResult>();
+        //    });
+        //    var bres = new BaseResult<TResult, TError>();
+        //    var res = Mapper.Map<TResult>(bres);
+        //    return res;
+        //}
     }
 }

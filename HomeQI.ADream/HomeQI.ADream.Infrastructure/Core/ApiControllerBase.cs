@@ -4,19 +4,22 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.Extensions.Caching.Distributed;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace HomeQI.ADream.Infrastructure.Core
 {
-    [Produces("application/*+json")]
+    //  [Produces("application/*+json")]
     [Route("api/[controller]/[action]")]
     //[ApiController]
     [Authorize]
@@ -37,6 +40,14 @@ namespace HomeQI.ADream.Infrastructure.Core
             {
                 return ResponseResult.Failed("图形验证码不能为空 ");
             }
+            if (Session == null)
+            {
+                return ResponseResult.Failed("请刷新浏览器 ");
+            }
+            if (CheakCode == null)
+            {
+                return ResponseResult.Failed("图形验证码不正确");
+            }
             if (!CheakCode.Equals(code))
             {
                 return ResponseResult.Failed("图形验证码不正确");
@@ -44,10 +55,10 @@ namespace HomeQI.ADream.Infrastructure.Core
             Session.SetString(nameof(CheakCode), string.Empty);
             return ResponseResult.Success();
         }
-        public ISession Session => HttpContext.Session;
-
+        protected ISession Session => HttpContext.Session;
+        protected IDistributedCache Cache => GetService<IDistributedCache>();
         protected string CheakCode => Session.GetString(nameof(CheakCode));
-        public string ControllerName { get; set; }
+        protected string ControllerName { get; set; }
         public string ActionName { get; set; }
 
         public string AreaName { get; set; }
@@ -194,10 +205,10 @@ namespace HomeQI.ADream.Infrastructure.Core
 
             return text;
         }
-        public ILoggerFactory LoggerFactory => GetRequiredService<ILoggerFactory>();
+        protected ILoggerFactory LoggerFactory => GetRequiredService<ILoggerFactory>();
         public T GetService<T>() => HttpContext.RequestServices.GetService<T>();
         public T GetRequiredService<T>() => HttpContext.RequestServices.GetRequiredService<T>();
-        protected IHostingEnvironment Env => GetRequiredService<IHostingEnvironment>();
+        public IHostingEnvironment Env => GetRequiredService<IHostingEnvironment>();
 
         protected string GetModelErrs()
         {
@@ -207,13 +218,39 @@ namespace HomeQI.ADream.Infrastructure.Core
             {
                 foreach (var item2 in item.Errors)
                 {
-                    if (!item2.ErrorMessage.IsNotNullOrEmpty())
+                    if (item2.ErrorMessage.IsNotNullOrEmpty())
                     {
                         sb.AppendLine(item2.ErrorMessage + "<br />");
                     }
                 }
             }
             return sb.ToString();
+        }
+        protected async Task SetCacheAsync<T>(string key, T objects, CancellationToken cancellationToken = default) where T : class
+        {
+            await Cache.SetStringAsync(key, objects.ToJson(), cancellationToken);
+        }
+        protected async Task<T> GetCacheAsync<T>(string key, CancellationToken cancellationToken = default)
+        {
+            if (string.IsNullOrEmpty(key))
+            {
+                throw new ArgumentNullEx(nameof(key), "key Is Null Or Empty");
+            }
+            var cacheValue = await Cache.GetStringAsync(key);
+            if (!string.IsNullOrEmpty(cacheValue))
+            {
+                try
+                {
+                    return JsonConvert.DeserializeObject<T>(cacheValue);
+                }
+                catch (Exception ex)
+                {
+                    LogerHelp.Error(ex);
+                    //出错时删除key
+                    await Cache.RefreshAsync(key);
+                }
+            }
+            return default;
         }
         /// <summary>
         /// 
@@ -226,16 +263,40 @@ namespace HomeQI.ADream.Infrastructure.Core
             var vales = ModelState.Values.ToArray();
             for (int i = 0; i <= ModelState.ErrorCount - 1; i++)
             {
+                var dies = string.Empty;
                 if (vales != null)
                 {
+                    string key = string.Empty;
+                    if (keys.Length > i)
+                    {
+                        key = keys[i];
+                        foreach (var item in ModelState[key].Errors)
+                        {
+                            if (item.ErrorMessage.IsNotNullOrEmpty())
+                            {
+                                dies += item.ErrorMessage + ";";
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (var item in ModelState.Values)
+                        {
+                            foreach (var item2 in item.Errors)
+                            {
+                                dies += item2.ErrorMessage + ";";
+                            }
+                        }
+                    }
                     responseErrors.Add(new ResponseError
                     {
-                        Code = keys[i],
-                        Description = vales[i].ToJson()
+                        Code = key,
+                        Description = dies
                     });
+
                 }
             }
-            return Json(responseErrors);
+            return Json(ResponseResult.Failed(responseErrors.ToArray()));
         }
     }
 }

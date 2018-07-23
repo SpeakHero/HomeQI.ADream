@@ -1,0 +1,43 @@
+﻿{
+  "IdentityOptions": {
+    "claimsIdentity": {
+      "roleClaimType": "http://schemas.microsoft.com/ws/2008/06/identity/claims/role",
+      "userNameClaimType": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name",
+      "userIdClaimType": "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier",
+      "securityStampClaimType": "AspNet.Identity.SecurityStamp"
+    },
+    "user": {
+      "allowedUserNameCharacters": "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+",
+      "requireUniqueEmail": false
+    },
+    "password": {
+      "requiredLength": 6,
+      "requiredUniqueChars": 1,
+      "requireNonAlphanumeric": true,
+      "requireLowercase": true,
+      "requireUppercase": true,
+      "requireDigit": true
+    },
+    "lockout": {
+      "allowedForNewUsers": true,
+      "maxFailedAccessAttempts": 5,
+      "defaultLockoutTimeSpan": "00:05:00"
+    },
+    "signIn": {
+      "requireConfirmedEmail": true,
+      "requireConfirmedPhoneNumber": true
+    },
+    "tokens": {
+      "providerMap": {},
+      "emailConfirmationTokenProvider": "Default",
+      "passwordResetTokenProvider": "Default",
+      "changeEmailTokenProvider": "Default",
+      "changePhoneNumberTokenProvider": "Phone",
+      "authenticatorTokenProvider": "Authenticator"
+    },
+    "stores": {
+      "maxLengthForKeys": 0,
+      "protectPersonalData": false
+    }
+  }
+}

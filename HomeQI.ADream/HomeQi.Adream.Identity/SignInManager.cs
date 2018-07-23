@@ -1,6 +1,4 @@
-// Copyright (c) .NET Foundation. All rights reserved.
-// Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
-
+using HomeQI.Adream.Identity;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
@@ -9,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Security.Principal;
 using System.Threading.Tasks;
 namespace HomeQI.Adream.Identity
 {
@@ -666,7 +665,7 @@ namespace HomeQI.Adream.Identity
         /// <returns>A <see cref="ClaimsPrincipal"/> containing the user 2fa information.</returns>
         internal ClaimsPrincipal StoreTwoFactorInfo(string userId, string loginProvider)
         {
-            var identity = new ClaimsIdentity(IdentityConstants.TwoFactorUserIdScheme);
+            var identity = new ADreamClaimIdentity(IdentityConstants.TwoFactorUserIdScheme);
             identity.AddClaim(new Claim(ClaimTypes.Name, userId));
             if (loginProvider != null)
             {
@@ -678,7 +677,7 @@ namespace HomeQI.Adream.Identity
         internal async Task<ClaimsPrincipal> StoreRememberClient(TUser user)
         {
             var userId = await UserManager.GetUserIdAsync(user);
-            var rememberBrowserIdentity = new ClaimsIdentity(IdentityConstants.TwoFactorRememberMeScheme);
+            var rememberBrowserIdentity = new ADreamClaimIdentity(IdentityConstants.TwoFactorRememberMeScheme);
             rememberBrowserIdentity.AddClaim(new Claim(ClaimTypes.Name, userId));
             if (UserManager.SupportsUserSecurityStamp)
             {
@@ -688,13 +687,13 @@ namespace HomeQI.Adream.Identity
             return new ClaimsPrincipal(rememberBrowserIdentity);
         }
 
-        private ClaimsIdentity CreateIdentity(TwoFactorAuthenticationInfo info)
+        private ADreamClaimIdentity CreateIdentity(TwoFactorAuthenticationInfo info)
         {
             if (info == null)
             {
                 return null;
             }
-            var identity = new ClaimsIdentity(IdentityConstants.TwoFactorUserIdScheme);
+            var identity = new ADreamClaimIdentity(IdentityConstants.TwoFactorUserIdScheme);
             identity.AddClaim(new Claim(ClaimTypes.Name, info.UserId));
             if (info.LoginProvider != null)
             {
@@ -721,13 +720,13 @@ namespace HomeQI.Adream.Identity
             {
                 if (!await IsTwoFactorClientRememberedAsync(user))
                 {
-                    // Store the userId for use after two factor check
+                    // 在两个因素检查后存储用户ID供使用
                     var userId = await UserManager.GetUserIdAsync(user);
                     await Context.SignInAsync(IdentityConstants.TwoFactorUserIdScheme, StoreTwoFactorInfo(userId, loginProvider));
                     return SignInResult.TwoFactorRequired;
                 }
             }
-            // Cleanup external cookie
+            // 清除外部cookie
             if (loginProvider != null)
             {
                 await Context.SignOutAsync(IdentityConstants.ExternalScheme);
